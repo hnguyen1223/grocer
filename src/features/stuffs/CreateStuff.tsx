@@ -54,6 +54,7 @@ export default function CreateStuff() {
     outsideError,
     id,
     emoji,
+    category,
   ] = useGetShelfLife();
 
   const isFormValid = name && location;
@@ -77,6 +78,7 @@ export default function CreateStuff() {
         location,
         durabilities,
         emoji,
+        category,
         ...(expiryDate ? { expiryDate } : {}),
       };
       dispatch({

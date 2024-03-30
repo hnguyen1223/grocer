@@ -7,9 +7,9 @@ import {
   StuffLocation,
 } from "../interfaces";
 import {
+  BaseRequest,
   DurabiltityRequest,
   DurabiltityResponse,
-  EmojiRequest,
   GptVersion,
 } from "../interfaces/api.model";
 import useCallable from "./firebase/functions";
@@ -98,6 +98,7 @@ export function useGetShelfLife(): [
   any,
   any,
   string,
+  string,
   string
 ] {
   const [id, setId] = useState<string>(uuidv4());
@@ -105,6 +106,7 @@ export function useGetShelfLife(): [
   const [freezer, setFreezer] = useState<Durability>();
   const [outside, setOutside] = useState<Durability>();
   const [emoji, setEmoji] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
 
   const [getFreezer, freezerLoading, freezerError] = useCallable<
     DurabiltityRequest,
@@ -118,9 +120,14 @@ export function useGetShelfLife(): [
     DurabiltityRequest,
     DurabiltityResponse
   >("getShelfLife");
-  const [getEmoji, _1, _2] = useCallable<EmojiRequest, DurabiltityResponse>(
-    "getEmoji"
-  );
+  const [getEmoji, eLoading, eEerror] = useCallable<
+    BaseRequest,
+    DurabiltityResponse
+  >("getEmoji");
+  const [getCategory, cLoading, cError] = useCallable<
+    BaseRequest,
+    DurabiltityResponse
+  >("getCategory");
 
   function clearShelfLife() {
     fridge && setFridge(undefined);
@@ -146,6 +153,9 @@ export function useGetShelfLife(): [
           (res?.data?.response?.content ?? "").replace(/[\w\\\/\s,\(\)]+/g, "")
         )
       ),
+      getCategory({ id, item, gpt }).then((res) =>
+        setCategory((res?.data?.response?.content ?? "").trim())
+      ),
     ]);
   }
 
@@ -163,6 +173,7 @@ export function useGetShelfLife(): [
     outsideError,
     id,
     emoji,
+    category,
   ];
 }
 

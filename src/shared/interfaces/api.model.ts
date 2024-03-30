@@ -16,16 +16,12 @@ export type CallableHook<T, K> = [
 
 export interface BaseRequest {
   id: string;
+  item: string;
   gpt: GptVersion;
 }
 
 export interface DurabiltityRequest extends BaseRequest {
-  item: string;
   location: StuffLocation;
-}
-
-export interface EmojiRequest extends BaseRequest {
-  item: string;
 }
 
 export interface DurabiltityResponse {

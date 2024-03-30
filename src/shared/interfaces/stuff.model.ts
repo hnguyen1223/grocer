@@ -15,8 +15,9 @@ export interface Durability {
 export type Durabilities = Record<StuffLocation, Durability | undefined>;
 
 export interface Stuff extends DocumentData {
-  emoji: string;
   id: string;
+  emoji: string;
+  category: string;
   dateAdded: string;
   name: string;
   location: StuffLocation;
