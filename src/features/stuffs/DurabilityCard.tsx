@@ -10,6 +10,7 @@ import {
 import { isDesktop } from "react-device-detect";
 import { useOrientation } from "react-use";
 import { memo, useCallback } from "react";
+import Loading from "../../shared/components/Loading";
 
 const CARD_WIDTH = 148;
 
@@ -19,12 +20,16 @@ const DurabilityCard = memo(function DurabilityCard({
   isSelected,
   onSelect,
   loading,
+  disabled,
+  error,
 }: {
   stuffLocation: StuffLocation;
   durability: Durability | undefined;
   isSelected: boolean;
   onSelect: (location: StuffLocation) => void;
   loading?: boolean;
+  disabled?: boolean;
+  error?: any;
 }) {
   const theme = useTheme();
   const orientation = useOrientation();
@@ -89,19 +94,28 @@ const DurabilityCard = memo(function DurabilityCard({
   return (
     <Card
       variant="outlined"
-      sx={{ width: isHorizontalLayout ? CARD_WIDTH : "100%" }}
+      sx={{
+        position: "relative",
+        width: isHorizontalLayout ? CARD_WIDTH : "100%",
+      }}
     >
       <CardActionArea
         onClick={handleClick}
-        disabled={!onSelect}
+        disabled={!onSelect || disabled}
+        className={disabled ? "" : "gradient-light"}
         sx={{
           backgroundColor: isSelected
             ? theme.palette.mode === "light"
               ? theme.palette.secondary.light
               : theme.palette.secondary.dark
-            : theme.palette.background.default,
+            : disabled
+            ? theme.palette.action.disabledBackground
+            : "transparent",
           height: "100%",
           padding: "14px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start",
         }}
       >
         <Box
@@ -119,6 +133,7 @@ const DurabilityCard = memo(function DurabilityCard({
         </Box>
         {description}
       </CardActionArea>
+      <Loading loading={!!loading}></Loading>
     </Card>
   );
 });

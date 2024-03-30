@@ -24,12 +24,6 @@ export default function StuffList({
         {stuffs.map((stuff) => (
           <StuffRow key={stuff.id} stuff={stuff}></StuffRow>
         ))}
-        {stuffs.map((stuff) => (
-          <StuffRow key={stuff.id + 10} stuff={stuff}></StuffRow>
-        ))}
-        {stuffs.map((stuff) => (
-          <StuffRow key={stuff.id + 20} stuff={stuff}></StuffRow>
-        ))}
       </List>
     )
   );

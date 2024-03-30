@@ -2,6 +2,7 @@ import ModalLayout from "../../shared/components/ModalLayout";
 import {
   ChangeEvent,
   FocusEventHandler,
+  KeyboardEventHandler,
   useContext,
   useEffect,
   useRef,
@@ -14,25 +15,31 @@ import {
   CreateModalContext,
   CreateModalTogglerContext,
 } from "../../core/CreateStuffProvider";
-import { AutoAwesome } from "@mui/icons-material";
-import { LoadingButton } from "@mui/lab";
-import { Stack, Box, TextField, Typography, Button } from "@mui/material";
+import {
+  Stack,
+  Box,
+  TextField,
+  Typography,
+  Button,
+  useTheme,
+} from "@mui/material";
 import { isDesktop } from "react-device-detect";
 import DurabilityCard from "./DurabilityCard";
 import { useGetShelfLife } from "../../shared/hooks";
+import { AutoAwesome } from "@mui/icons-material";
+import Loading from "../../shared/components/Loading";
+import SvgGradient from "../../shared/components/SvgGradient";
 
 export default function CreateStuff() {
+  const theme = useTheme();
   const isModalShown = useContext(CreateModalContext);
   const setIsModalShown = useContext(CreateModalTogglerContext);
   const dispatch = useContext(StuffsDispatchContext);
-
   const [name, setName] = useState<string>("");
   const [location, setLocation] = useState<StuffLocation>();
   const [expiryDate, setExpiryDate] = useState<string>();
   const [gpt, setGpt] = useState<number>(3);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>();
-  const isFormValid = name && location;
-
   const [
     getShelfLife,
     clearShelfLife,
@@ -49,12 +56,16 @@ export default function CreateStuff() {
     emoji,
   ] = useGetShelfLife();
 
+  const isFormValid = name && location;
+  const loading = freezerLoading || fridgeLoading || outsideLoading;
+  const getShelfLifeDisabled = !name || !!fridge || !!freezer || !!outside;
+  const displayName = name + (emoji && " " + emoji);
+
   function handleNameInput(
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
     setName(e.target.value);
-    clearShelfLife();
-    console.log("nameChange");
+    clearState();
   }
 
   function handleAction() {
@@ -76,25 +87,39 @@ export default function CreateStuff() {
     }
   }
 
+  function handleAI() {
+    clearState();
+    getShelfLife(name, gpt);
+  }
+
   // Need to reset state manual as compoent may be kept mounted in drawer on mobile layout
   // or due to this dialog bug when on desktop https://github.com/mui/material-ui/issues/10572
   function handleClose() {
     setIsModalShown(false);
-    setName("");
-    setLocation(undefined);
-    setExpiryDate(undefined);
-    clearShelfLife();
+    clearState(true);
   }
 
   function handleGptChange() {
     setGpt(gpt === 3 ? 4 : 3);
-    clearShelfLife();
-    getShelfLife(name, gpt);
+    handleAI();
   }
 
   const handleFocus: FocusEventHandler<
     HTMLInputElement | HTMLTextAreaElement
   > = (event) => event.target.select();
+
+  const handleEnter: KeyboardEventHandler = (e) => {
+    if (e.key === "Enter") {
+      handleAI();
+    }
+  };
+
+  function clearState(clearName = false) {
+    clearName && setName("");
+    setLocation(undefined);
+    setExpiryDate(undefined);
+    clearShelfLife();
+  }
 
   useEffect(() => {
     if (isDesktop && isModalShown && inputRef.current) {
@@ -118,7 +143,7 @@ export default function CreateStuff() {
             id="name"
             placeholder="New Item"
             variant="outlined"
-            value={name}
+            value={displayName}
             onChange={handleNameInput}
             sx={{ flex: "1 1 auto" }}
             inputProps={{
@@ -128,22 +153,20 @@ export default function CreateStuff() {
                 padding: "0 0 8px 0",
               },
             }}
-            InputProps={{
-              startAdornment: emoji && (
-                <span style={{ textWrap: "nowrap" }}>{emoji}&nbsp;</span>
-              ),
-            }}
             onFocus={handleFocus}
+            disabled={loading}
+            onKeyDown={handleEnter}
           />
-          <LoadingButton
-            onClick={() => getShelfLife(name, gpt)}
-            loading={freezerLoading || fridgeLoading || outsideLoading}
-            loadingPosition="center"
+          <Button
             variant="contained"
-            disabled={!name || !!fridge || !!freezer || !!outside}
+            sx={{ backgroundColor: theme.palette.background.default }}
+            disabled={getShelfLifeDisabled}
+            onClick={handleAI}
           >
-            <AutoAwesome />
-          </LoadingButton>
+            <Loading loading={loading}></Loading>
+            <SvgGradient></SvgGradient>
+            <AutoAwesome sx={{ fill: "url(#gradient)" }} />
+          </Button>
         </Box>
         <DurabilityCard
           stuffLocation={StuffLocation.FREEZER}
@@ -151,6 +174,8 @@ export default function CreateStuff() {
           isSelected={location === StuffLocation.FREEZER}
           onSelect={setLocation}
           loading={freezerLoading}
+          error={freezerError}
+          disabled={!freezer}
         ></DurabilityCard>
         <DurabilityCard
           stuffLocation={StuffLocation.FRIDGE}
@@ -158,6 +183,8 @@ export default function CreateStuff() {
           isSelected={location === StuffLocation.FRIDGE}
           onSelect={setLocation}
           loading={fridgeLoading}
+          error={fridgeError}
+          disabled={!freezer}
         ></DurabilityCard>
         <DurabilityCard
           stuffLocation={StuffLocation.OUTSIDE}
@@ -165,6 +192,8 @@ export default function CreateStuff() {
           isSelected={location === StuffLocation.OUTSIDE}
           onSelect={setLocation}
           loading={outsideLoading}
+          error={outsideError}
+          disabled={!freezer}
         ></DurabilityCard>
         {fridge && (
           <Box

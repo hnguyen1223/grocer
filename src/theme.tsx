@@ -93,6 +93,9 @@ export const lightTheme: Theme = createTheme({
       main: "#8BC34A",
       light: "#caec94",
     },
+    action: {
+      disabledBackground: "rgba(0, 0, 0, 0.1)",
+    },
   },
   ...baseThemeOptions,
 });

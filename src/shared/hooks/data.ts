@@ -145,16 +145,11 @@ export function useGetShelfLife(): [
       getOutside({ id, item, location: StuffLocation.OUTSIDE, gpt }).then(
         (res) => setOutside(mapResponse(res?.data?.response?.content))
       ),
-      getEmoji({ id, item, gpt }).then((res) => {
-        console.log(
-          "emoji",
-          res?.data?.response?.content,
-          (res?.data?.response?.content ?? "").replace(/[\w\\\/]+/g, "")
-        );
+      getEmoji({ id, item, gpt }).then((res) =>
         setEmoji(
-          (res?.data?.response?.content ?? "").replace(/[\w\\\/]+/g, "")
-        );
-      }),
+          (res?.data?.response?.content ?? "").replace(/[\w\\\/\s,\(\)]+/g, "")
+        )
+      ),
     ]);
   }
 
