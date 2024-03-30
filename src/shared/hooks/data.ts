@@ -40,11 +40,9 @@ export function useStuffs(): [
   const [localStuffs, setLocalStuffs, removeLocalStuffs] =
     useLocalStorage<Stuff[]>("stuffs");
   const [stuffs, setStuffs] = useState<Stuff[]>([]);
-  console.log("useStuffs", { stuffs, dbStuffs, localStuffs, loading, error });
 
   const dispatchWitSideEffect = useCallback(
     (action: StuffAction) => {
-      console.log("dispatchWitFirestore", action, stuffs);
       const nextState = stuffsReducer(stuffs, action);
       if (user) {
         const ref = doc(firestore, `users/${user.uid}/stuffs`, action.stuff.id);
@@ -69,7 +67,6 @@ export function useStuffs(): [
 
   //When user changes due to login, logout or initial load
   useEffect(() => {
-    console.log("user changed", user, userInitialized);
     if (userInitialized) {
       if (!user) {
         setStuffs(localStuffs || []);
@@ -81,7 +78,6 @@ export function useStuffs(): [
 
   useEffect(() => {
     if (dbStuffs) {
-      console.log("dbStuffs");
       setStuffs(dbStuffs);
     }
   }, [dbStuffs]);

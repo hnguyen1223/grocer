@@ -5,14 +5,7 @@ import "./index.scss";
 import Stuffs from "./features/stuffs/Stuffs";
 import { StrictMode } from "react";
 import Stats from "./features/stats/Stats";
-window.addEventListener("resize", () => {
-  // For the rare legacy browsers that don't support it
-  if (!window.visualViewport) {
-    return;
-  }
 
-  console.log(window.visualViewport.height);
-});
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>

@@ -44,7 +44,6 @@ export function useDb<T extends DocumentData | DocumentData[]>(
 
       setLoading(true);
       setError(undefined);
-      console.log("collection", path);
       if (isCollection) {
         const ref = collection(firestore, path).withConverter(converter);
         data = (await getDocs(ref)).docs.map((doc) => doc.data());
