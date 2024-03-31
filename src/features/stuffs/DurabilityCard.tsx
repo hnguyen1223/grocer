@@ -1,16 +1,11 @@
 import { Box, Card, CardActionArea, Typography, useTheme } from "@mui/material";
 import { Durability, StuffLocation } from "../../shared/interfaces";
-import {
-  AcUnit,
-  Kitchen,
-  Thermostat,
-  ThumbDownOutlined,
-  ThumbUpOutlined,
-} from "@mui/icons-material";
+import { ThumbDownOutlined, ThumbUpOutlined } from "@mui/icons-material";
 import { isDesktop } from "react-device-detect";
 import { useOrientation } from "react-use";
 import { memo, useCallback } from "react";
 import Loading from "../../shared/components/Loading";
+import LocationIcon from "../../shared/components/LocationIcon";
 
 const CARD_WIDTH = 148;
 
@@ -21,7 +16,6 @@ const DurabilityCard = memo(function DurabilityCard({
   onSelect,
   loading,
   disabled,
-  error,
 }: {
   stuffLocation: StuffLocation;
   durability: Durability | undefined;
@@ -45,15 +39,6 @@ const DurabilityCard = memo(function DurabilityCard({
     : durability?.hours
     ? `${durability.hours} hour${durability.hours > 1 ? "s" : ""}`
     : "";
-
-  const icon =
-    stuffLocation === StuffLocation.FREEZER ? (
-      <AcUnit sx={{ color: "dodgerblue" }} />
-    ) : stuffLocation === StuffLocation.FRIDGE ? (
-      <Kitchen sx={{ color: "lightblue" }} />
-    ) : (
-      <Thermostat color="warning" />
-    );
 
   const locationText = (
     <Typography variant="h6" component="div">
@@ -116,6 +101,7 @@ const DurabilityCard = memo(function DurabilityCard({
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-start",
+          alignItems: "unset",
         }}
       >
         <Box
@@ -127,7 +113,7 @@ const DurabilityCard = memo(function DurabilityCard({
             mb: "4px",
           }}
         >
-          {icon}
+          <LocationIcon stuffLocation={stuffLocation}></LocationIcon>
           {locationText}
           {durabilityText}
         </Box>

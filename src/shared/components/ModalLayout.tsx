@@ -16,7 +16,13 @@ export default function ModalLayout({
       <DialogContent>{children}</DialogContent>
     </Dialog>
   ) : (
-    <Drawer anchor="bottom" open={open} onClose={onClose} keepMounted>
+    <Drawer
+      anchor="bottom"
+      open={open}
+      onClose={onClose}
+      keepMounted
+      elevation={24}
+    >
       <Box sx={{ padding: "24px" }}>{children}</Box>
     </Drawer>
   );

@@ -9,7 +9,7 @@ import {
   useState,
 } from "react";
 import { StuffsDispatchContext } from "../../core/StuffsProvider";
-import { STUFF_ACTION_TYPE } from "../../shared/interfaces/reducer.model";
+import { StuffActionType } from "../../shared/interfaces/reducer.model";
 import { StuffLocation } from "../../shared/interfaces";
 import {
   CreateModalContext,
@@ -82,7 +82,7 @@ export default function CreateStuff() {
         ...(expiryDate ? { expiryDate } : {}),
       };
       dispatch({
-        type: STUFF_ACTION_TYPE.ADD,
+        type: StuffActionType.ADD,
         stuff,
       });
       handleClose();
@@ -143,7 +143,7 @@ export default function CreateStuff() {
           <TextField
             inputRef={inputRef}
             id="name"
-            placeholder="New Item"
+            placeholder="New Item✨✨"
             variant="outlined"
             value={displayName}
             onChange={handleNameInput}

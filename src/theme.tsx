@@ -9,9 +9,23 @@ const baseThemeOptions: ThemeOptions = {
   components: {
     MuiTypography: {
       styleOverrides: {
-        h2: {
-          fontSize: "2rem",
+        h3: {
+          fontSize: "1.9rem",
           fontWeight: 600,
+        },
+        h4: {
+          fontSize: "1.5rem",
+          fontWeight: 600,
+        },
+        h5: {
+          fontSize: "1.1rem",
+          fontWeight: 600,
+        },
+        h6: {
+          fontSize: "1.1rem",
+        },
+        body1: {
+          fontSize: "1rem",
         },
         body2: {
           fontSize: "0.85rem",
@@ -59,6 +73,28 @@ const baseThemeOptions: ThemeOptions = {
         root: {
           borderRadius: 6,
           textTransform: "none",
+        },
+      },
+    },
+    MuiPopover: {
+      styleOverrides: {
+        paper: {
+          borderRadius: 6,
+        },
+      },
+    },
+    MuiToggleButton: {
+      styleOverrides: {
+        root: {
+          justifyContent: "flex-start",
+          textTransform: "none",
+        },
+      },
+    },
+    MuiList: {
+      styleOverrides: {
+        root: {
+          paddingTop: 0,
         },
       },
     },

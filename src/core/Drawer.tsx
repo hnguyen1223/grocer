@@ -18,8 +18,9 @@ import {
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { CreateModalTogglerContext } from "./CreateStuffProvider";
+import { isDesktop } from "react-device-detect";
 
-const DRAWER_WIDTH = 224;
+const DRAWER_WIDTH = 256;
 
 export default function NavDrawer() {
   const setIsModalShown = useContext(CreateModalTogglerContext);
@@ -36,7 +37,10 @@ export default function NavDrawer() {
       variant="permanent"
       anchor="left"
     >
-      <Toolbar></Toolbar>
+      <Toolbar variant={isDesktop ? "regular" : "dense"}>
+        {/* logo here */}
+      </Toolbar>
+      <Divider />
       <List>
         <ListItem key="new" disablePadding>
           <ListItemButton onClick={() => setIsModalShown(true)} disableRipple>
@@ -46,7 +50,6 @@ export default function NavDrawer() {
             <ListItemText primary="Add" />
           </ListItemButton>
         </ListItem>
-        <Divider variant="middle" />
         <ListItem key="stuffs" disablePadding>
           <ListItemButton component={NavLink} to="/stuffs" disableRipple>
             <ListItemIcon>

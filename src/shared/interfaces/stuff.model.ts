@@ -5,6 +5,13 @@ export enum StuffLocation {
   FRIDGE = "fridge",
   OUTSIDE = "outside",
 }
+
+export enum StuffView {
+  LOCATION = "Location",
+  EXPIRY = "Expiry",
+  CATEGORY = "Category",
+}
+
 export interface Durability {
   hours: number;
   days: number;

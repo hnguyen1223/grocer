@@ -1,7 +1,7 @@
 import { Dispatch, useCallback, useContext, useEffect, useState } from "react";
 import {
   Durability,
-  STUFF_ACTION_TYPE,
+  StuffActionType,
   Stuff,
   StuffAction,
   StuffLocation,
@@ -47,13 +47,13 @@ export function useStuffs(): [
       if (user) {
         const ref = doc(firestore, `users/${user.uid}/stuffs`, action.stuff.id);
         switch (action.type) {
-          case STUFF_ACTION_TYPE.ADD:
+          case StuffActionType.ADD:
             setDoc(ref, action.stuff);
             break;
-          case STUFF_ACTION_TYPE.UPDATE:
+          case StuffActionType.UPDATE:
             updateDoc(ref, action.stuff);
             break;
-          case STUFF_ACTION_TYPE.DELETE:
+          case StuffActionType.DELETE:
             deleteDoc(ref);
             break;
         }
@@ -120,14 +120,10 @@ export function useGetShelfLife(): [
     DurabiltityRequest,
     DurabiltityResponse
   >("getShelfLife");
-  const [getEmoji, eLoading, eEerror] = useCallable<
-    BaseRequest,
-    DurabiltityResponse
-  >("getEmoji");
-  const [getCategory, cLoading, cError] = useCallable<
-    BaseRequest,
-    DurabiltityResponse
-  >("getCategory");
+  const [getEmoji] = useCallable<BaseRequest, DurabiltityResponse>("getEmoji");
+  const [getCategory] = useCallable<BaseRequest, DurabiltityResponse>(
+    "getCategory"
+  );
 
   function clearShelfLife() {
     fridge && setFridge(undefined);
@@ -192,7 +188,7 @@ function mapResponse(str: string | undefined): Durability {
 
 function stuffsReducer(stuffs: Stuff[], action: StuffAction): Stuff[] {
   switch (action.type) {
-    case STUFF_ACTION_TYPE.ADD:
+    case StuffActionType.ADD:
       return [
         ...stuffs,
         {
@@ -200,7 +196,7 @@ function stuffsReducer(stuffs: Stuff[], action: StuffAction): Stuff[] {
           dateAdded: new Date().toString(),
         } as Stuff,
       ];
-    case STUFF_ACTION_TYPE.UPDATE:
+    case StuffActionType.UPDATE:
       return stuffs.map((s) => {
         if (s.id === action.stuff.id) {
           return { ...s, ...action.stuff };
@@ -208,7 +204,7 @@ function stuffsReducer(stuffs: Stuff[], action: StuffAction): Stuff[] {
           return s;
         }
       });
-    case STUFF_ACTION_TYPE.DELETE:
+    case StuffActionType.DELETE:
       return stuffs.filter((s) => s.id !== action.stuff.id);
     default:
       throw Error("Unknown action: " + action.type);

@@ -22,9 +22,7 @@ export default function UserInfo() {
           }}
         >
           <UserAvatar size="medium"></UserAvatar>
-          <Typography variant="h6" fontWeight={600}>
-            {user?.displayName || "Guest"}
-          </Typography>
+          <Typography variant="h5">{user?.displayName || "Guest"}</Typography>
           {user && <Button onClick={signOut}>Sign out</Button>}
           <UserAIStat></UserAIStat>
         </Box>

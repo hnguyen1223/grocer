@@ -14,16 +14,15 @@ export default function Welcome() {
         alignItems: "center",
       }}
     >
-      <Typography variant="h2" sx={{ my: "12px" }}>
+      <Typography variant="h3" sx={{ my: "8px" }}>
         Welcome to Grocer!
       </Typography>
       <p>
-        This is a simple app that demonstrates how to use the MUI library with
-        React.
+        This is a simple app to manage food spoilage with a bit of AI goodness.
       </p>
-
       <p>
-        Please continue with an account to enjoy the full features of the app.
+        Please continue with a free account to enjoy the full features of the
+        app.
       </p>
       <Box
         sx={{

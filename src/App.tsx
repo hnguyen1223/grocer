@@ -13,14 +13,15 @@ import CreateStuff from "./features/stuffs/CreateStuff";
 import useIsHorizontal from "./shared/hooks/layout";
 import { isDesktop } from "react-device-detect";
 import NavBar from "./core/NavBar";
-import PathProvider from "./core/PathProvider";
+import HeaderProvider from "./core/HeaderProvider";
 
 function App() {
   const isHorizontalLayout = isDesktop || useIsHorizontal();
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <ThemeProvider theme={lightTheme}>
-        <PathProvider>
+        <HeaderProvider>
           <UserProvider>
             <StuffsProvider>
               <CreateStuffProvider>
@@ -37,7 +38,7 @@ function App() {
                     sx={{
                       pt: "56px",
                       pb: isHorizontalLayout ? "0" : "52px",
-                      px: "12px",
+                      px: "8px",
                       height: "100%",
                     }}
                   >
@@ -49,7 +50,7 @@ function App() {
               </CreateStuffProvider>
             </StuffsProvider>
           </UserProvider>
-        </PathProvider>
+        </HeaderProvider>
       </ThemeProvider>
     </LocalizationProvider>
   );

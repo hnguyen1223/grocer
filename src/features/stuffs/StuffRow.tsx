@@ -1,32 +1,30 @@
-import {
-  Box,
-  IconButton,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import { Stuff, StuffLocation } from "../../shared/interfaces";
+import { Box, ListItem, Typography, useTheme } from "@mui/material";
+import { Stuff, StuffView } from "../../shared/interfaces";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { useState } from "react";
-import {
-  AcUnit,
-  Delete,
-  Thermostat,
-  ThumbDown,
-  ThumbUp,
-} from "@mui/icons-material";
-import { isDesktop } from "react-device-detect";
+import { useContext, useState } from "react";
+import { StuffViewContext } from "./Stuffs";
+import { SellOutlined } from "@mui/icons-material";
+import LocationIcon from "../../shared/components/LocationIcon";
 dayjs.extend(relativeTime);
 
 export default function StuffRow({ stuff }: { stuff: Stuff }) {
   const theme = useTheme();
-  const [isHovered, setIsHovered] = useState(false);
-  const expiryDate = dayjs(stuff.expiryDate);
+  const view = useContext(StuffViewContext);
+  const [_, setIsHovered] = useState(false);
   const today = new Date();
-  const isExpired = expiryDate.isBefore(today);
+
+  const name = stuff.emoji + " " + stuff.name + " ";
+
+  const selectedDurability = stuff.durabilities[stuff.location];
+  const expiryDate = stuff.expiryDate
+    ? dayjs(stuff.expiryDate)
+    : selectedDurability?.days
+    ? dayjs().add(selectedDurability!.days, "day")
+    : selectedDurability?.hours
+    ? dayjs().add(selectedDurability!.hours, "hour")
+    : undefined;
+  const isExpired = expiryDate?.isBefore(today);
 
   return (
     <ListItem
@@ -35,28 +33,75 @@ export default function StuffRow({ stuff }: { stuff: Stuff }) {
       onMouseLeave={() => setIsHovered(false)}
       sx={{ cursor: "pointer" }}
     >
-      <ListItemIcon>
-        {" "}
-        {stuff.location === StuffLocation.FRIDGE ? (
-          <AcUnit sx={{ color: "lightblue" }} />
-        ) : (
-          <Thermostat color="warning" />
-        )}
-      </ListItemIcon>
-      <ListItemText
-        primary={<Typography variant="body1">{stuff.name}</Typography>}
-        secondary={
-          <Typography variant="subtitle2">
-            {dayjs(stuff.dateAdded).fromNow()}
-          </Typography>
-        }
-      />
-      <Box>
+      <Box
+        sx={{
+          flex: "1 1 auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: 0.8,
+        }}
+      >
         <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h6">{name}</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 0.5,
+            }}
+          >
+            <Typography
+              color={
+                isExpired
+                  ? theme.palette.warning.main
+                  : theme.palette.text.secondary
+              }
+              variant="body2"
+              noWrap
+            >
+              {expiryDate?.fromNow(true)}
+            </Typography>
+            {view !== StuffView.LOCATION && (
+              <LocationIcon stuffLocation={stuff.location}></LocationIcon>
+            )}
+          </Box>
+        </Box>
+        <Typography variant="body2" color={theme.palette.text.secondary}>
+          {selectedDurability?.description}
+        </Typography>
+        {view !== StuffView.CATEGORY && (
+          <Box sx={{ display: "flex", gap: 0.5, alignItems: "center" }}>
+            <SellOutlined
+              sx={{ fontSize: "0.9rem", color: theme.palette.text.secondary }}
+            />
+            <Typography variant="subtitle2" color="text.secondary">
+              {stuff.category}
+            </Typography>
+          </Box>
+        )}
+      </Box>
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+        }}
+      >
+        {/* <Box
           display="flex"
           justifyContent="right"
           gap={1}
-          sx={{ visibility: isDesktop && isHovered ? "visible" : "hidden" }}
+          sx={{
+            visibility: isDesktop && isHovered ? "visible" : "hidden",
+          }}
         >
           <IconButton aria-label="delete" size="small">
             <ThumbUp />
@@ -67,23 +112,9 @@ export default function StuffRow({ stuff }: { stuff: Stuff }) {
           <IconButton aria-label="delete" size="small" color="warning">
             <Delete />
           </IconButton>
-        </Box>
+        </Box> */}
 
-        <ListItemText
-          primary={
-            <Typography
-              color={
-                isExpired
-                  ? theme.palette.warning.main
-                  : theme.palette.text.primary
-              }
-              variant="subtitle1"
-              align="right"
-            >
-              {expiryDate.fromNow()}
-            </Typography>
-          }
-        />
+        {/* <LocationIcon stuffLocation={stuff.location}></LocationIcon> */}
       </Box>
     </ListItem>
   );

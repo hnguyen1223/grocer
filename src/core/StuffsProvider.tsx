@@ -9,7 +9,7 @@ export const StuffsDispatchContext = createContext<Dispatch<StuffAction>>(
 );
 
 export function StuffsProvider({ children }: { children: ReactNode }) {
-  const [stuffs, dispatch, loading, error] = useStuffs();
+  const [stuffs, dispatch] = useStuffs();
   return (
     <StuffsContext.Provider value={stuffs}>
       <StuffsDispatchContext.Provider value={dispatch}>
