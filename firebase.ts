@@ -6,7 +6,7 @@ import { getFunctions } from "firebase/functions";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAEsXilU3RSzPMTGTDXJtKRqwMaNr0o1hA",
-  authDomain: "grocer-cbeb9.firebaseapp.com",
+  authDomain: "grocer.huynguyen.ca",
   projectId: "grocer-cbeb9",
   storageBucket: "grocer-cbeb9.appspot.com",
   messagingSenderId: "193878211517",
