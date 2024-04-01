@@ -25,6 +25,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { firestore } from "../../../firebase";
+import { DataWithState } from "../interfaces/data.model";
 
 export function useStuffs(): [
   Stuff[],
@@ -85,22 +86,16 @@ export function useStuffs(): [
   return [stuffs, dispatchWitSideEffect, loading, error];
 }
 
-export function useGetShelfLife(): [
-  (item: string, gpt: GptVersion) => void,
-  () => void,
-  Durability | undefined,
-  Durability | undefined,
-  Durability | undefined,
-  boolean,
-  boolean,
-  boolean,
-  any,
-  any,
-  any,
-  string,
-  string,
-  string
-] {
+export function useGetShelfLife(): {
+  id: string;
+  getShelfLife: (item: string, gpt: GptVersion) => void;
+  clearShelfLife: () => void;
+  freezer: DataWithState<Durability, any, true, "object">;
+  fridge: DataWithState<Durability, any, true, "object">;
+  outside: DataWithState<Durability, any, true, "object">;
+  emoji: DataWithState<string, any, true, "object">;
+  category: DataWithState<string, any, true, "object">;
+} {
   const [id, setId] = useState<string>(uuidv4());
   const [fridge, setFridge] = useState<Durability>();
   const [freezer, setFreezer] = useState<Durability>();
@@ -120,10 +115,14 @@ export function useGetShelfLife(): [
     DurabiltityRequest,
     DurabiltityResponse
   >("getShelfLife");
-  const [getEmoji] = useCallable<BaseRequest, DurabiltityResponse>("getEmoji");
-  const [getCategory] = useCallable<BaseRequest, DurabiltityResponse>(
-    "getCategory"
-  );
+  const [getEmoji, emojiLoading, emojiError] = useCallable<
+    BaseRequest,
+    DurabiltityResponse
+  >("getEmoji");
+  const [getCategory, categoryLoading, categoryError] = useCallable<
+    BaseRequest,
+    DurabiltityResponse
+  >("getCategory");
 
   function clearShelfLife() {
     fridge && setFridge(undefined);
@@ -155,22 +154,36 @@ export function useGetShelfLife(): [
     ]);
   }
 
-  return [
+  return {
+    id,
     getShelfLife,
     clearShelfLife,
-    freezer,
-    fridge,
-    outside,
-    freezerLoading,
-    fridgeLoading,
-    outsideLoading,
-    freezerError,
-    fridgeError,
-    outsideError,
-    id,
-    emoji,
-    category,
-  ];
+    freezer: {
+      data: freezer,
+      loading: freezerLoading,
+      error: freezerError,
+    },
+    fridge: {
+      data: fridge,
+      loading: fridgeLoading,
+      error: fridgeError,
+    },
+    outside: {
+      data: outside,
+      loading: outsideLoading,
+      error: outsideError,
+    },
+    emoji: {
+      data: emoji,
+      loading: emojiLoading,
+      error: emojiError,
+    },
+    category: {
+      data: category,
+      loading: categoryLoading,
+      error: categoryError,
+    },
+  };
 }
 
 function mapResponse(str: string | undefined): Durability {

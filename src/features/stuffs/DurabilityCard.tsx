@@ -6,24 +6,22 @@ import { useOrientation } from "react-use";
 import { memo, useCallback } from "react";
 import Loading from "../../shared/components/Loading";
 import LocationIcon from "../../shared/components/LocationIcon";
+import { DataWithState } from "../../shared/interfaces/data.model";
 
 const CARD_WIDTH = 148;
 
 const DurabilityCard = memo(function DurabilityCard({
-  stuffLocation,
   durability,
+  stuffLocation,
   isSelected,
   onSelect,
-  loading,
   disabled,
 }: {
   stuffLocation: StuffLocation;
-  durability: Durability | undefined;
   isSelected: boolean;
   onSelect: (location: StuffLocation) => void;
-  loading?: boolean;
   disabled?: boolean;
-  error?: any;
+  durability: DataWithState<Durability, any, true, "object">;
 }) {
   const theme = useTheme();
   const orientation = useOrientation();
@@ -34,10 +32,10 @@ const DurabilityCard = memo(function DurabilityCard({
 
   const isHorizontalLayout =
     isDesktop || orientation.angle === 90 || orientation.angle === 270;
-  const durationText = durability?.days
-    ? `${durability.days} day${durability.days > 1 ? "s" : ""}`
-    : durability?.hours
-    ? `${durability.hours} hour${durability.hours > 1 ? "s" : ""}`
+  const durationText = durability.data?.days
+    ? `${durability.data.days} day${durability.data.days > 1 ? "s" : ""}`
+    : durability.data?.hours
+    ? `${durability.data.hours} hour${durability.data.hours > 1 ? "s" : ""}`
     : "";
 
   const locationText = (
@@ -46,7 +44,7 @@ const DurabilityCard = memo(function DurabilityCard({
     </Typography>
   );
 
-  const durabilityText = durability && (
+  const durabilityText = durability.data && (
     <Box
       sx={{
         flex: "1 1 auto",
@@ -56,7 +54,7 @@ const DurabilityCard = memo(function DurabilityCard({
         alignItems: "center",
       }}
     >
-      {durability.isRecommended ? (
+      {durability.data.isRecommended ? (
         <ThumbUpOutlined color="success" sx={{ width: "18px" }} />
       ) : (
         <ThumbDownOutlined sx={{ width: "18px" }} />
@@ -67,12 +65,12 @@ const DurabilityCard = memo(function DurabilityCard({
     </Box>
   );
 
-  const description = durability?.description && (
+  const description = durability.data?.description && (
     <Typography
       variant="body2"
       sx={{ textAlign: isHorizontalLayout ? "center" : "left" }}
     >
-      {durability.description}
+      {durability.data.description}
     </Typography>
   );
 
@@ -119,7 +117,7 @@ const DurabilityCard = memo(function DurabilityCard({
         </Box>
         {description}
       </CardActionArea>
-      <Loading loading={!!loading}></Loading>
+      <Loading loading={!!durability.loading}></Loading>
     </Card>
   );
 });

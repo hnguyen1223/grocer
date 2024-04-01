@@ -11,12 +11,13 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import {
   AuthProviderID,
-  SignInHook,
+  SignInFn,
   SignInMethod,
-  SignOutHook,
+  SignOutFn,
 } from "../../interfaces";
 import { isDesktop } from "react-device-detect";
 import { auth } from "../../../../firebase";
+import { DataWithState } from "../../interfaces/data.model";
 
 export function useUser(): [User | null, boolean] {
   const [user, setUser] = useState<User | null>(auth.currentUser);
@@ -35,7 +36,7 @@ export function useProviderSignIn(
   providerId: AuthProviderID,
   scopes: string[] = [],
   customParameters: CustomParameters = {}
-): SignInHook<SignInMethod.PROVIDER> {
+): DataWithState<SignInFn<SignInMethod.PROVIDER>, AuthError> {
   const [error, setError] = useState<AuthError>();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -66,7 +67,10 @@ export function useProviderSignIn(
   return [cachedSignInFn, loading, error];
 }
 
-export function useEmailAndPasswordSignIn(): SignInHook<SignInMethod.EMAIL_AND_PASSWORD> {
+export function useEmailAndPasswordSignIn(): DataWithState<
+  SignInFn<SignInMethod.EMAIL_AND_PASSWORD>,
+  AuthError
+> {
   const [error, setError] = useState<AuthError>();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -87,7 +91,7 @@ export function useEmailAndPasswordSignIn(): SignInHook<SignInMethod.EMAIL_AND_P
   return [cachedSignInFn, loading, error];
 }
 
-export function useSignOut(auth: Auth): SignOutHook {
+export function useSignOut(auth: Auth): DataWithState<SignOutFn, AuthError> {
   const [error, setError] = useState<AuthError>();
   const [loading, setLoading] = useState<boolean>(false);
   const cachedSignOutFn = useCallback(async () => {

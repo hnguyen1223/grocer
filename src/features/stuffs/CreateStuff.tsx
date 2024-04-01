@@ -40,27 +40,22 @@ export default function CreateStuff() {
   const [expiryDate, setExpiryDate] = useState<string>();
   const [gpt, setGpt] = useState<number>(3);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>();
-  const [
+  const {
     getShelfLife,
     clearShelfLife,
     freezer,
     fridge,
     outside,
-    freezerLoading,
-    fridgeLoading,
-    outsideLoading,
-    freezerError,
-    fridgeError,
-    outsideError,
     id,
     emoji,
     category,
-  ] = useGetShelfLife();
+  } = useGetShelfLife();
 
   const isFormValid = name && location;
-  const loading = freezerLoading || fridgeLoading || outsideLoading;
-  const getShelfLifeDisabled = !name || !!fridge || !!freezer || !!outside;
-  const displayName = name + (emoji && " " + emoji);
+  const loading = freezer.loading || fridge.loading || outside.loading;
+  const getShelfLifeDisabled =
+    !name || !!fridge.data || !!freezer.data || !!outside.data;
+  const displayName = name + (emoji.data && " " + emoji.data);
 
   function handleNameInput(
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -71,14 +66,17 @@ export default function CreateStuff() {
 
   function handleAction() {
     if (isFormValid) {
-      const durabilities = { freezer, fridge, outside };
       const stuff = {
         id,
         name,
         location,
-        durabilities,
-        emoji,
-        category,
+        durabilities: {
+          freezer: freezer.data,
+          fridge: fridge.data,
+          outside: outside.data,
+        },
+        emoji: emoji.data,
+        category: category.data,
         ...(expiryDate ? { expiryDate } : {}),
       };
       dispatch({
@@ -175,8 +173,6 @@ export default function CreateStuff() {
           durability={freezer}
           isSelected={location === StuffLocation.FREEZER}
           onSelect={setLocation}
-          loading={freezerLoading}
-          error={freezerError}
           disabled={!freezer}
         ></DurabilityCard>
         <DurabilityCard
@@ -184,8 +180,6 @@ export default function CreateStuff() {
           durability={fridge}
           isSelected={location === StuffLocation.FRIDGE}
           onSelect={setLocation}
-          loading={fridgeLoading}
-          error={fridgeError}
           disabled={!freezer}
         ></DurabilityCard>
         <DurabilityCard
@@ -193,8 +187,6 @@ export default function CreateStuff() {
           durability={outside}
           isSelected={location === StuffLocation.OUTSIDE}
           onSelect={setLocation}
-          loading={outsideLoading}
-          error={outsideError}
           disabled={!freezer}
         ></DurabilityCard>
         {fridge && (

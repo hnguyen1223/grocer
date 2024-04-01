@@ -4,10 +4,13 @@ import {
   HttpsCallable,
   httpsCallable,
 } from "firebase/functions";
-import { CallableHook } from "../../interfaces/api.model";
 import { functions } from "../../../../firebase";
+import { DataWithState } from "../../interfaces/data.model";
+import { CallableFn } from "../../interfaces";
 
-export default function useCallable<T, K>(name: string): CallableHook<T, K> {
+export default function useCallable<T, K>(
+  name: string
+): DataWithState<CallableFn<T, K>, FunctionsError> {
   const [error, setError] = useState<FunctionsError>();
   const [loading, setLoading] = useState<boolean>(false);
 

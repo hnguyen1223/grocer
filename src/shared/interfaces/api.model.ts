@@ -1,4 +1,4 @@
-import { FunctionsError, HttpsCallableResult } from "firebase/functions";
+import { HttpsCallableResult } from "firebase/functions";
 import { StuffLocation } from ".";
 
 export enum GptVersion {
@@ -8,11 +8,6 @@ export enum GptVersion {
 export type CallableFn<T, K> = (
   data: T
 ) => Promise<HttpsCallableResult<K> | undefined>;
-export type CallableHook<T, K> = [
-  CallableFn<T, K>,
-  boolean,
-  FunctionsError | undefined
-];
 
 export interface BaseRequest {
   id: string;
