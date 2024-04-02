@@ -10,6 +10,7 @@ import { createPortal } from "react-dom";
 import { StuffView } from "../../shared/interfaces";
 import { StuffViewContext, SetStuffViewContext } from "./Stuffs";
 
+//TODO: add grouping, sorting and filtering controls
 export default function ViewControl() {
   const view = useContext(StuffViewContext);
   const setView = useContext(SetStuffViewContext);
@@ -44,13 +45,14 @@ export default function ViewControl() {
             variant="text"
             onClick={handleOpen}
             startIcon={<DisplaySettings />}
+            size="large"
           >
             View
           </Button>,
           headerControlRef.current
         )}
       <Popover
-        id="asdf"
+        id="view-control"
         open={open}
         anchorEl={anchorEl}
         onClose={handleClose}

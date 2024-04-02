@@ -40,7 +40,10 @@ export default function Stuffs() {
         case StuffView.EXPIRY:
           {
             const expiryDate = getExpiryDate(stuff);
-            if (today.isAfter(expiryDate)) {
+            if (
+              today.isAfter(expiryDate) &&
+              today.diff(expiryDate, "d") !== 0
+            ) {
               acc["expired"] = acc["expired"] || [];
               acc["expired"].push(stuff);
             } else if (Math.abs(today.diff(expiryDate, "d")) < 3) {

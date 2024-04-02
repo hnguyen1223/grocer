@@ -25,7 +25,7 @@ export default function StuffList({
 
   return (
     stuffs.length > 0 && (
-      <CollapsibleList heading={heading} subtitle="Expiry" icon={icon}>
+      <CollapsibleList heading={heading} icon={icon}>
         <List sx={{ width: isDesktop ? "760px" : "auto" }}>
           {stuffs.map((stuff, index) => (
             <div key={stuff.id}>

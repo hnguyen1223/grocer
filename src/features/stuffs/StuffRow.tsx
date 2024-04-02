@@ -17,11 +17,13 @@ export default function StuffRow({ stuff }: { stuff: Stuff }) {
   const [_, setIsHovered] = useState(false);
   const today = new Date();
 
-  const name = stuff.emoji + " " + stuff.name + " ";
-
   const selectedDurability = stuff.durabilities[stuff.location];
   const expiryDate = getExpiryDate(stuff);
-  const isExpired = expiryDate?.isBefore(today);
+  const isExpired =
+    expiryDate.isBefore(today) && expiryDate.diff(today, "d") !== 0;
+  const name = stuff.emoji + " " + stuff.name + " ";
+  const expiryText =
+    expiryDate.diff(today, "d") === 0 ? "today" : expiryDate.from(today);
 
   return (
     <ListItemButton
@@ -65,7 +67,7 @@ export default function StuffRow({ stuff }: { stuff: Stuff }) {
               variant="body2"
               noWrap
             >
-              {expiryDate?.fromNow(true)}
+              {expiryText}
             </Typography>
             {view !== StuffView.LOCATION && (
               <LocationIcon stuffLocation={stuff.location}></LocationIcon>
