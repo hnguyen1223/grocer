@@ -161,7 +161,7 @@ export default function CreateStuff() {
           freezer={freezer}
           outside={outside}
         ></Durabilities>
-        {fridge && (
+        {fridge.data && (
           <Box
             sx={{
               display: "flex",

@@ -36,33 +36,35 @@ export default function Stuffs() {
   const today = dayjs(new Date());
   const lists: { [key: string]: Stuff[] } = useMemo(() => {
     const lists = allStuffs.reduce((acc: { [key: string]: Stuff[] }, stuff) => {
-      switch (view) {
-        case StuffView.EXPIRY:
-          {
-            const expiryDate = getExpiryDate(stuff);
-            if (
-              today.isAfter(expiryDate) &&
-              today.diff(expiryDate, "d") !== 0
-            ) {
-              acc["expired"] = acc["expired"] || [];
-              acc["expired"].push(stuff);
-            } else if (Math.abs(today.diff(expiryDate, "d")) < 3) {
-              acc["in 3 days"] = acc["in 3 days"] || [];
-              acc["in 3 days"].push(stuff);
-            } else {
-              acc["later"] = acc["later"] || [];
-              acc["later"].push(stuff);
+      if (!stuff.status) {
+        switch (view) {
+          case StuffView.EXPIRY:
+            {
+              const expiryDate = getExpiryDate(stuff);
+              if (
+                today.isAfter(expiryDate) &&
+                today.diff(expiryDate, "d") !== 0
+              ) {
+                acc["expired"] = acc["expired"] || [];
+                acc["expired"].push(stuff);
+              } else if (Math.abs(today.diff(expiryDate, "d")) < 3) {
+                acc["in 3 days"] = acc["in 3 days"] || [];
+                acc["in 3 days"].push(stuff);
+              } else {
+                acc["later"] = acc["later"] || [];
+                acc["later"].push(stuff);
+              }
             }
-          }
-          break;
-        case StuffView.CATEGORY:
-          acc[stuff.category] = acc[stuff.category] || [];
-          acc[stuff.category].push(stuff);
-          break;
-        case StuffView.LOCATION:
-          acc[stuff.location] = acc[stuff.location] || [];
-          acc[stuff.location].push(stuff);
-          break;
+            break;
+          case StuffView.CATEGORY:
+            acc[stuff.category] = acc[stuff.category] || [];
+            acc[stuff.category].push(stuff);
+            break;
+          case StuffView.LOCATION:
+            acc[stuff.location] = acc[stuff.location] || [];
+            acc[stuff.location].push(stuff);
+            break;
+        }
       }
       return acc;
     }, {});
