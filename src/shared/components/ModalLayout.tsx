@@ -12,7 +12,7 @@ export default function ModalLayout({
   onClose: () => void;
 }) {
   return isDesktop ? (
-    <Dialog open={open} onClose={onClose} keepMounted>
+    <Dialog open={open} onClose={onClose}>
       <DialogContent>{children}</DialogContent>
     </Dialog>
   ) : (

@@ -3,9 +3,9 @@ import { UserContext } from "../../core/UserProvider";
 import { Box, Button, Typography } from "@mui/material";
 import UserAvatar from "./UserAvatar";
 import Welcome from "./Welcome";
-import UserAIStat from "./UserAIStat";
 import { useSignOut } from "../../shared/hooks";
 import { auth } from "../../../firebase";
+import UserAIStat from "./UserAIStat";
 export default function UserInfo() {
   const user = useContext(UserContext);
   const [signOut] = useSignOut(auth);
@@ -16,14 +16,23 @@ export default function UserInfo() {
         <Box
           sx={{
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
-            gap: "16px",
-            marginBottom: "12px",
+            gap: 3,
           }}
         >
-          <UserAvatar size="medium"></UserAvatar>
-          <Typography variant="h5">{user?.displayName || "Guest"}</Typography>
-          {user && <Button onClick={signOut}>Sign out</Button>}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "16px",
+            }}
+          >
+            <UserAvatar size="medium"></UserAvatar>
+            <Typography variant="h5">{user?.displayName || "Guest"}</Typography>
+            {user && <Button onClick={signOut}>Sign out</Button>}
+          </Box>
+
           <UserAIStat></UserAIStat>
         </Box>
       ) : (

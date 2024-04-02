@@ -186,6 +186,12 @@ export function useGetShelfLife(): {
   };
 }
 
+export function useUsageStats(): DataWithState<number, any> {
+  const user = useContext(UserContext);
+  const [userData, loading, error] = useDb<any>(`users/${user?.uid}`);
+  return [userData?.weeklyUsage ?? 0, loading, error];
+}
+
 function mapResponse(str: string | undefined): Durability {
   if (!str) {
     throw new Error("Invalid response");
