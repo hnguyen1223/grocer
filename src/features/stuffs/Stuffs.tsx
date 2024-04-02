@@ -34,38 +34,45 @@ export default function Stuffs() {
   };
   const [view, setView] = useState<StuffView>(StuffView.EXPIRY);
   const today = dayjs(new Date());
-  const lists: { [key: string]: Stuff[] } = useMemo(
-    () =>
-      allStuffs.reduce((acc: { [key: string]: Stuff[] }, stuff) => {
-        switch (view) {
-          case StuffView.EXPIRY:
-            {
-              const expiryDate = getExpiryDate(stuff);
-              if (today.isAfter(expiryDate)) {
-                acc["expired"] = acc["expired"] || [];
-                acc["expired"].push(stuff);
-              } else if (today.diff(expiryDate, "D") < 3) {
-                acc["expiring"] = acc["expiring"] || [];
-                acc["expiring"].push(stuff);
-              } else {
-                acc["others"] = acc["others"] || [];
-                acc["others"].push(stuff);
-              }
+  const lists: { [key: string]: Stuff[] } = useMemo(() => {
+    const lists = allStuffs.reduce((acc: { [key: string]: Stuff[] }, stuff) => {
+      switch (view) {
+        case StuffView.EXPIRY:
+          {
+            const expiryDate = getExpiryDate(stuff);
+            if (today.isAfter(expiryDate)) {
+              acc["expired"] = acc["expired"] || [];
+              acc["expired"].push(stuff);
+            } else if (today.diff(expiryDate, "D") < 3) {
+              acc["expiring"] = acc["expiring"] || [];
+              acc["expiring"].push(stuff);
+            } else {
+              acc["others"] = acc["others"] || [];
+              acc["others"].push(stuff);
             }
-            break;
-          case StuffView.CATEGORY:
-            acc[stuff.category] = acc[stuff.category] || [];
-            acc[stuff.category].push(stuff);
-            break;
-          case StuffView.LOCATION:
-            acc[stuff.location] = acc[stuff.location] || [];
-            acc[stuff.location].push(stuff);
-            break;
-        }
-        return acc;
-      }, {}),
-    [allStuffs, view]
-  );
+          }
+          break;
+        case StuffView.CATEGORY:
+          acc[stuff.category] = acc[stuff.category] || [];
+          acc[stuff.category].push(stuff);
+          break;
+        case StuffView.LOCATION:
+          acc[stuff.location] = acc[stuff.location] || [];
+          acc[stuff.location].push(stuff);
+          break;
+      }
+      return acc;
+    }, {});
+
+    // TODO improve sorting & add sorting controls
+    Object.keys(lists).forEach(
+      (key) =>
+        (lists[key] = lists[key].sort((a, b) =>
+          getExpiryDate(a).isBefore(getExpiryDate(b)) ? -1 : 1
+        ))
+    );
+    return lists;
+  }, [allStuffs, view]);
 
   const subtitle =
     allStuffs.length + " item" + (allStuffs.length > 1 ? "s" : "");
