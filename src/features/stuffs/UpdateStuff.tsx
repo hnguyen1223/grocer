@@ -8,7 +8,7 @@ import {
   StuffsDispatchContext,
 } from "../../core/StuffsProvider";
 import { ThumbDown, ThumbUp } from "@mui/icons-material";
-import { Stuff, StuffActionType, StuffStatus } from "../../shared/interfaces";
+import { StuffActionType, StuffStatus } from "../../shared/interfaces";
 
 export default function UpdateStuff() {
   const navigate = useNavigate();
@@ -33,14 +33,6 @@ export default function UpdateStuff() {
         id: stuff!.id,
         status,
       },
-    });
-    handleClose();
-  }
-
-  function handleRemove() {
-    dispatch({
-      type: StuffActionType.DELETE,
-      stuff: stuff as Stuff,
     });
     handleClose();
   }
