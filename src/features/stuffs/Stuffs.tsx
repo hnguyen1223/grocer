@@ -16,6 +16,7 @@ import Heading from "../../shared/components/Heading";
 import { isDesktop } from "react-device-detect";
 import ViewControl from "./ViewControl";
 import { Outlet } from "react-router-dom";
+import { getExpiryDate } from "../../shared/utils/expiry";
 
 export const StuffViewContext = createContext<StuffView | null>(
   StuffView.EXPIRY
@@ -38,15 +39,18 @@ export default function Stuffs() {
       allStuffs.reduce((acc: { [key: string]: Stuff[] }, stuff) => {
         switch (view) {
           case StuffView.EXPIRY:
-            if (today.isAfter(stuff.expiryDate)) {
-              acc["expired"] = acc["expired"] || [];
-              acc["expired"].push(stuff);
-            } else if (today.diff(stuff.expiryDate, "D") < 3) {
-              acc["expiring"] = acc["expiring"] || [];
-              acc["expiring"].push(stuff);
-            } else {
-              acc["others"] = acc["others"] || [];
-              acc["others"].push(stuff);
+            {
+              const expiryDate = getExpiryDate(stuff);
+              if (today.isAfter(expiryDate)) {
+                acc["expired"] = acc["expired"] || [];
+                acc["expired"].push(stuff);
+              } else if (today.diff(expiryDate, "D") < 3) {
+                acc["expiring"] = acc["expiring"] || [];
+                acc["expiring"].push(stuff);
+              } else {
+                acc["others"] = acc["others"] || [];
+                acc["others"].push(stuff);
+              }
             }
             break;
           case StuffView.CATEGORY:

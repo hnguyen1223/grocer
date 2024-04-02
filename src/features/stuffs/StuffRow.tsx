@@ -7,6 +7,7 @@ import { StuffViewContext } from "./Stuffs";
 import { SellOutlined } from "@mui/icons-material";
 import LocationIcon from "../../shared/components/LocationIcon";
 import { useNavigate } from "react-router-dom";
+import { getExpiryDate } from "../../shared/utils";
 dayjs.extend(relativeTime);
 
 export default function StuffRow({ stuff }: { stuff: Stuff }) {
@@ -19,13 +20,7 @@ export default function StuffRow({ stuff }: { stuff: Stuff }) {
   const name = stuff.emoji + " " + stuff.name + " ";
 
   const selectedDurability = stuff.durabilities[stuff.location];
-  const expiryDate = stuff.expiryDate
-    ? dayjs(stuff.expiryDate)
-    : selectedDurability?.days
-    ? dayjs().add(selectedDurability!.days, "day")
-    : selectedDurability?.hours
-    ? dayjs().add(selectedDurability!.hours, "hour")
-    : undefined;
+  const expiryDate = getExpiryDate(stuff);
   const isExpired = expiryDate?.isBefore(today);
 
   return (
