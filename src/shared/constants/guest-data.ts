@@ -1,6 +1,7 @@
+import dayjs from "dayjs";
 import { Stuff } from "../interfaces";
 
-export const GUEST_DATA = [
+const GUEST_DATA = [
   {
     location: "fridge",
     category: "Produce",
@@ -174,4 +175,11 @@ export const GUEST_DATA = [
     category: "Seafood",
     dateAdded: "Mon Apr 01 2024 18:17:57 GMT-0700 (Pacific Daylight Time)",
   },
-] as Stuff[];
+];
+
+export function getGuessData(): Stuff[] {
+  return GUEST_DATA.map((stuff) => ({
+    ...stuff,
+    dateAdded: dayjs().subtract(3, "d").toString(),
+  })) as Stuff[];
+}

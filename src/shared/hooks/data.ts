@@ -26,7 +26,7 @@ import {
 } from "firebase/firestore";
 import { firestore } from "../../../firebase";
 import { DataWithState } from "../interfaces/data.model";
-import { GUEST_DATA } from "../constants/guest-data";
+import { getGuessData } from "../constants/guest-data";
 
 export function useStuffs(): [
   Stuff[],
@@ -71,7 +71,7 @@ export function useStuffs(): [
   useEffect(() => {
     if (userInitialized) {
       if (!user) {
-        setStuffs(localStuffs || GUEST_DATA);
+        setStuffs(localStuffs || getGuessData());
       } else if (localStuffs) {
         removeLocalStuffs();
       }
