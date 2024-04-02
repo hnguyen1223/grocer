@@ -108,9 +108,15 @@ export default function Stuffs() {
             subtitle={subtitle}
           ></Heading>
 
-          {Object.entries(lists).map(([key, value]) => (
-            <StuffList key={key} stuffs={value} heading={key}></StuffList>
-          ))}
+          {Object.keys(lists)
+            .sort()
+            .map((key) => (
+              <StuffList
+                key={key}
+                stuffs={lists[key]}
+                heading={key}
+              ></StuffList>
+            ))}
         </Box>
         <Outlet />
       </StuffViewContext.Provider>
