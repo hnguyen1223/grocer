@@ -15,6 +15,7 @@ import { HeaderContext } from "../../core/HeaderProvider";
 import Heading from "../../shared/components/Heading";
 import { isDesktop } from "react-device-detect";
 import ViewControl from "./ViewControl";
+import { Outlet } from "react-router-dom";
 
 export const StuffViewContext = createContext<StuffView | null>(
   StuffView.EXPIRY
@@ -107,6 +108,7 @@ export default function Stuffs() {
             <StuffList key={key} stuffs={value} heading={key}></StuffList>
           ))}
         </Box>
+        <Outlet />
       </StuffViewContext.Provider>
     </SetStuffViewContext.Provider>
   );

@@ -15,20 +15,13 @@ import {
   CreateModalContext,
   CreateModalTogglerContext,
 } from "../../core/CreateStuffProvider";
-import {
-  Stack,
-  Box,
-  TextField,
-  Typography,
-  Button,
-  useTheme,
-} from "@mui/material";
+import { Box, TextField, Typography, Button, useTheme } from "@mui/material";
 import { isDesktop } from "react-device-detect";
-import DurabilityCard from "./DurabilityCard";
 import { useGetShelfLife } from "../../shared/hooks";
 import { AutoAwesome } from "@mui/icons-material";
 import Loading from "../../shared/components/Loading";
 import SvgGradient from "../../shared/components/SvgGradient";
+import Durabilities from "./Durabilities";
 
 export default function CreateStuff() {
   const theme = useTheme();
@@ -129,15 +122,8 @@ export default function CreateStuff() {
 
   return (
     <ModalLayout open={isModalShown} onClose={handleClose}>
-      <Stack
-        direction="row"
-        useFlexGap
-        flexWrap="wrap"
-        rowGap={2}
-        columnGap={2}
-        sx={{ width: isDesktop ? 480 : "100%", justifyContent: "center" }}
-      >
-        <Box sx={{ flex: "1 1 auto", display: "flex" }}>
+      <Box>
+        <Box sx={{ flex: "1 1 auto", display: "flex", mb: 3 }}>
           <TextField
             inputRef={inputRef}
             id="name"
@@ -168,30 +154,21 @@ export default function CreateStuff() {
             <AutoAwesome sx={{ fill: "url(#gradient)" }} />
           </Button>
         </Box>
-        <DurabilityCard
-          stuffLocation={StuffLocation.FREEZER}
-          durability={freezer}
-          isSelected={location === StuffLocation.FREEZER}
-          onSelect={setLocation}
-          disabled={!freezer}
-        ></DurabilityCard>
-        <DurabilityCard
-          stuffLocation={StuffLocation.FRIDGE}
-          durability={fridge}
-          isSelected={location === StuffLocation.FRIDGE}
-          onSelect={setLocation}
-          disabled={!freezer}
-        ></DurabilityCard>
-        <DurabilityCard
-          stuffLocation={StuffLocation.OUTSIDE}
-          durability={outside}
-          isSelected={location === StuffLocation.OUTSIDE}
-          onSelect={setLocation}
-          disabled={!freezer}
-        ></DurabilityCard>
+        <Durabilities
+          selectedLocation={location}
+          onLocationSelect={setLocation}
+          fridge={fridge}
+          freezer={freezer}
+          outside={outside}
+        ></Durabilities>
         {fridge && (
           <Box
-            sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              mt: 2,
+            }}
           >
             <Typography variant="subtitle2" px={2}>
               Powered by GPT-{gpt}.{gpt === 3 && " Not happy?"}
@@ -203,7 +180,8 @@ export default function CreateStuff() {
             )}
           </Box>
         )}
-      </Stack>
+      </Box>
+
       <Box display="flex" justifyContent="right" marginTop={2} gap={1}>
         <Button onClick={handleClose} color="warning">
           Cancel

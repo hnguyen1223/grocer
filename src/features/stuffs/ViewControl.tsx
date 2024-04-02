@@ -29,7 +29,6 @@ export default function ViewControl() {
     newView: StuffView | null
   ) => {
     setView(newView as StuffView);
-    console.log("setView", newView);
     handleClose(e);
   };
 

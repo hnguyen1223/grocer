@@ -19,6 +19,11 @@ export interface Durability {
   description: string;
 }
 
+export enum StuffStatus {
+  FINISHED = "Finished",
+  SPOILED = "Spoiled",
+}
+
 export type Durabilities = Record<StuffLocation, Durability | undefined>;
 
 export interface Stuff extends DocumentData {
@@ -30,4 +35,5 @@ export interface Stuff extends DocumentData {
   location: StuffLocation;
   expiryDate?: string;
   durabilities: Durabilities;
+  status?: StuffStatus;
 }

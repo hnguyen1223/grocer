@@ -1,4 +1,4 @@
-import { Box, ListItem, Typography, useTheme } from "@mui/material";
+import { Box, ListItemButton, Typography, useTheme } from "@mui/material";
 import { Stuff, StuffView } from "../../shared/interfaces";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -6,10 +6,12 @@ import { useContext, useState } from "react";
 import { StuffViewContext } from "./Stuffs";
 import { SellOutlined } from "@mui/icons-material";
 import LocationIcon from "../../shared/components/LocationIcon";
+import { useNavigate } from "react-router-dom";
 dayjs.extend(relativeTime);
 
 export default function StuffRow({ stuff }: { stuff: Stuff }) {
   const theme = useTheme();
+  const navigate = useNavigate();
   const view = useContext(StuffViewContext);
   const [_, setIsHovered] = useState(false);
   const today = new Date();
@@ -27,11 +29,13 @@ export default function StuffRow({ stuff }: { stuff: Stuff }) {
   const isExpired = expiryDate?.isBefore(today);
 
   return (
-    <ListItem
+    <ListItemButton
       alignItems="flex-start"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       sx={{ cursor: "pointer" }}
+      onClick={() => navigate(`${stuff.id}`)}
+      disableRipple
     >
       <Box
         sx={{
@@ -94,28 +98,7 @@ export default function StuffRow({ stuff }: { stuff: Stuff }) {
           flexDirection: "column",
           alignItems: "flex-end",
         }}
-      >
-        {/* <Box
-          display="flex"
-          justifyContent="right"
-          gap={1}
-          sx={{
-            visibility: isDesktop && isHovered ? "visible" : "hidden",
-          }}
-        >
-          <IconButton aria-label="delete" size="small">
-            <ThumbUp />
-          </IconButton>
-          <IconButton aria-label="delete" size="small">
-            <ThumbDown />
-          </IconButton>
-          <IconButton aria-label="delete" size="small" color="warning">
-            <Delete />
-          </IconButton>
-        </Box> */}
-
-        {/* <LocationIcon stuffLocation={stuff.location}></LocationIcon> */}
-      </Box>
-    </ListItem>
+      ></Box>
+    </ListItemButton>
   );
 }
