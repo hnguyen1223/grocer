@@ -43,12 +43,12 @@ export default function Stuffs() {
             if (today.isAfter(expiryDate)) {
               acc["expired"] = acc["expired"] || [];
               acc["expired"].push(stuff);
-            } else if (today.diff(expiryDate, "D") < 3) {
-              acc["expiring"] = acc["expiring"] || [];
-              acc["expiring"].push(stuff);
+            } else if (Math.abs(today.diff(expiryDate, "d")) < 3) {
+              acc["in 3 days"] = acc["in 3 days"] || [];
+              acc["in 3 days"].push(stuff);
             } else {
-              acc["others"] = acc["others"] || [];
-              acc["others"].push(stuff);
+              acc["later"] = acc["later"] || [];
+              acc["later"].push(stuff);
             }
           }
           break;
