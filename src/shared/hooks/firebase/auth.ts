@@ -2,6 +2,7 @@ import {
   Auth,
   AuthError,
   CustomParameters,
+  GithubAuthProvider,
   GoogleAuthProvider,
   User,
   signInWithEmailAndPassword,
@@ -48,6 +49,9 @@ export function useProviderSignIn(
       switch (providerId) {
         case AuthProviderID.GOOGLE:
           provider = new GoogleAuthProvider();
+          break;
+        case AuthProviderID.GITHUB:
+          provider = new GithubAuthProvider();
           break;
         default:
           throw new Error(`Provider ${providerId} not supported`);

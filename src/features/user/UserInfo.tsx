@@ -6,7 +6,11 @@ import Welcome from "./Welcome";
 import { useSignOut } from "../../shared/hooks";
 import { auth } from "../../../firebase";
 import UserAIStat from "./UserAIStat";
-export default function UserInfo() {
+export default function UserInfo({
+  onGuestSignIn,
+}: {
+  onGuestSignIn: () => void;
+}) {
   const user = useContext(UserContext);
   const [signOut] = useSignOut(auth);
 
@@ -36,7 +40,7 @@ export default function UserInfo() {
           <UserAIStat></UserAIStat>
         </Box>
       ) : (
-        <Welcome></Welcome>
+        <Welcome onGuestSignIn={onGuestSignIn}></Welcome>
       )}
     </Box>
   );

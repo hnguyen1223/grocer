@@ -16,7 +16,7 @@ export enum AuthProviderID {
   GOOGLE = "google.com",
   //   FACEBOOK = "facebook.com",
   //   TWITTER = "twitter.com",
-  //   GITHUB = "github.com",
+  GITHUB = "github.com",
   //   APPLE = "apple.com",
   //   YAHOO = "yahoo.com",
   //   MICROSOFT = "hotmail.com",

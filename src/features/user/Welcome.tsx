@@ -3,9 +3,13 @@ import { useProviderSignIn } from "../../shared/hooks";
 import { AuthProviderID } from "../../shared/interfaces";
 import { PersonOutline } from "@mui/icons-material";
 
-export default function Welcome() {
+export default function Welcome({
+  onGuestSignIn,
+}: {
+  onGuestSignIn: () => void;
+}) {
   const [googleSignIn] = useProviderSignIn(AuthProviderID.GOOGLE);
-  const [gitHubSignIn] = useProviderSignIn(AuthProviderID.GOOGLE);
+  const [gitHubSignIn] = useProviderSignIn(AuthProviderID.GITHUB);
   return (
     <Box
       sx={{
@@ -52,7 +56,11 @@ export default function Welcome() {
       </Box>
 
       <p>Or continue as guest</p>
-      <Button onClick={googleSignIn} variant="outlined" sx={{ width: "210px" }}>
+      <Button
+        onClick={onGuestSignIn}
+        variant="outlined"
+        sx={{ width: "210px" }}
+      >
         <PersonOutline width="24px"></PersonOutline>
         &nbsp; Continue as Guest
       </Button>
