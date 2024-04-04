@@ -1,4 +1,4 @@
-import { Box, Dialog, DialogContent, Drawer } from "@mui/material";
+import { Box, Dialog, DialogContent, SwipeableDrawer } from "@mui/material";
 import { ReactNode } from "react";
 import { isDesktop } from "react-device-detect";
 
@@ -18,14 +18,16 @@ export default function ModalLayout({
       <DialogContent sx={{ py: "36px" }}>{children}</DialogContent>
     </Dialog>
   ) : (
-    <Drawer
+    <SwipeableDrawer
+      onOpen={() => {}}
       anchor="bottom"
       open={open}
       onClose={onClose}
       keepMounted={keepMounted}
       elevation={24}
+      disableDiscovery={true}
     >
       <Box sx={{ padding: "24px" }}>{children}</Box>
-    </Drawer>
+    </SwipeableDrawer>
   );
 }
