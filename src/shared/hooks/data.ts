@@ -85,7 +85,7 @@ export function useStuffs(): [
   return [stuffs, dispatchWitSideEffect, loading, error];
 }
 
-export function useGetShelfLife(): {
+export function useGetShelfLife(existingRequestId?: string): {
   id: string;
   getShelfLife: (item: string, gpt: GptVersion) => void;
   clearShelfLife: () => void;
@@ -95,7 +95,7 @@ export function useGetShelfLife(): {
   emoji: DataWithState<string, any, true, "object">;
   category: DataWithState<string, any, true, "object">;
 } {
-  const [id, setId] = useState<string>(uuidv4());
+  const [id, setId] = useState<string>(existingRequestId ?? uuidv4());
   const [fridge, setFridge] = useState<Durability>();
   const [freezer, setFreezer] = useState<Durability>();
   const [outside, setOutside] = useState<Durability>();

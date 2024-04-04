@@ -20,9 +20,11 @@ import Durabilities from "../Durabilities";
 
 export default function CreateStuffText({
   nameFromImage,
+  existingRequestId,
   onClose,
 }: {
   nameFromImage?: string;
+  existingRequestId?: string;
   onClose: () => void;
 }) {
   const theme = useTheme();
@@ -41,7 +43,7 @@ export default function CreateStuffText({
     id,
     emoji,
     category,
-  } = useGetShelfLife();
+  } = useGetShelfLife(existingRequestId);
 
   const isFormValid = name && location;
   const loading = freezer.loading || fridge.loading || outside.loading;

@@ -21,7 +21,7 @@ export default function CreateStuffImage({
 }: {
   file: File | null;
   onReSelect: () => void;
-  onItemSelect: (item: string) => void;
+  onItemSelect: (id: string, item: string) => void;
 }) {
   const user = useContext(UserContext);
   const [upload, id, objects, loading, error] = useObjectRecognition();
@@ -54,7 +54,7 @@ export default function CreateStuffImage({
 
   function handleProceed() {
     if (choice) {
-      onItemSelect(choice);
+      onItemSelect(id, choice);
     }
   }
 
