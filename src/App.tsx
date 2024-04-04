@@ -14,6 +14,8 @@ import useIsHorizontal from "./shared/hooks/layout";
 import { isDesktop } from "react-device-detect";
 import NavBar from "./core/NavBar";
 import HeaderProvider from "./core/HeaderProvider";
+import UserModalProvider from "./core/UserModalProvider";
+import UserModal from "./features/user/UserModal";
 
 function App() {
   const isHorizontalLayout = isDesktop || useIsHorizontal();
@@ -23,32 +25,35 @@ function App() {
       <ThemeProvider theme={lightTheme}>
         <HeaderProvider>
           <UserProvider>
-            <StuffsProvider>
-              <CreateStuffProvider>
-                <CssBaseline />
-                {isHorizontalLayout && <NavDrawer />}
-                <Box
-                  sx={{
-                    position: "relative",
-                    width: "100%",
-                  }}
-                >
-                  <Header />
+            <UserModalProvider>
+              <StuffsProvider>
+                <CreateStuffProvider>
+                  <CssBaseline />
+                  {isHorizontalLayout && <NavDrawer />}
                   <Box
                     sx={{
-                      pt: "56px",
-                      pb: isHorizontalLayout ? "0" : "52px",
-                      px: "8px",
-                      height: "100%",
+                      position: "relative",
+                      width: "100%",
                     }}
                   >
-                    <Outlet />
+                    <Header />
+                    <Box
+                      sx={{
+                        pt: "56px",
+                        pb: isHorizontalLayout ? "0" : "52px",
+                        px: "8px",
+                        height: "100%",
+                      }}
+                    >
+                      <Outlet />
+                    </Box>
+                    {!isHorizontalLayout && <NavBar></NavBar>}
                   </Box>
-                  {!isHorizontalLayout && <NavBar></NavBar>}
-                </Box>
-                <CreateStuff></CreateStuff>
-              </CreateStuffProvider>
-            </StuffsProvider>
+                  <CreateStuff></CreateStuff>
+                  <UserModal></UserModal>
+                </CreateStuffProvider>
+              </StuffsProvider>
+            </UserModalProvider>
           </UserProvider>
         </HeaderProvider>
       </ThemeProvider>

@@ -1,20 +1,22 @@
-import { Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Link, Stack, Typography } from "@mui/material";
 import { isDesktop } from "react-device-detect";
 import { Image, Keyboard } from "@mui/icons-material";
 import { useContext } from "react";
 import { UserContext } from "../../../core/UserProvider";
+import { SetUserModalContext } from "../../../core/UserModalProvider";
 
 export enum InputMethod {
   TEXT = "text",
   IMAGE = "image",
 }
 
-export default function ({
+export default function InputSelect({
   onClick,
 }: {
   onClick: (method: InputMethod) => void;
 }) {
   const user = useContext(UserContext);
+  const setUserModalOpen = useContext(SetUserModalContext);
   return (
     <>
       <Typography variant="h4" sx={{ textAlign: "center" }}>
@@ -53,9 +55,26 @@ export default function ({
         </Button>
       </Stack>
       {!user && (
-        <Typography variant="subtitle2" sx={{ textAlign: "center", mt: 2 }}>
-          Access image recognition with a free account
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            mt: 2,
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "4px",
+          }}
+        >
+          <Typography variant="subtitle2">
+            Image recognition available with a free account!
+          </Typography>
+          <Link
+            variant="subtitle2"
+            component="button"
+            onClick={() => setUserModalOpen(true)}
+          >
+            Continue
+          </Link>
+        </Box>
       )}
     </>
   );

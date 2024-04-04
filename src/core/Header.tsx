@@ -1,12 +1,15 @@
 import { AppBar, Box, Divider, Toolbar, useTheme } from "@mui/material";
-import User from "../features/user/User";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { HeaderContext } from "./HeaderProvider";
 import Heading from "../shared/components/Heading";
 import { isDesktop } from "react-device-detect";
+import { SetUserModalContext } from "./UserModalProvider";
+import UserAvatar from "../features/user/UserAvatar";
 
 export default function Header() {
   const { header, showHeader } = useContext(HeaderContext);
+  const setModalOpen = useContext(SetUserModalContext);
+  const openModal = useCallback(() => setModalOpen(true), [setModalOpen]);
   const theme = useTheme();
   return (
     <AppBar
@@ -40,7 +43,7 @@ export default function Header() {
           ></Heading>
         </Box>
         <Box sx={{ position: "absolute", right: 16 }}>
-          <User></User>
+          <UserAvatar onClick={openModal}></UserAvatar>
         </Box>
       </Toolbar>
       {showHeader && <Divider />}
