@@ -189,9 +189,9 @@ export function useGetShelfLife(existingRequestId?: string): {
 export function useObjectRecognition(): [(
   data: Blob | Uint8Array | ArrayBuffer,
   metadata?: UploadMetadata | undefined
-) => Promise<UploadResult | undefined>, string, string[] | undefined, boolean, StorageError | FirestoreError | undefined] {
+) => Promise<UploadResult | undefined>, string, string, string[] | undefined, boolean, StorageError | FirestoreError | undefined] {
   const user = useContext(UserContext);
-  const [upload, _, uploading, uploadError] = useUpload();
+  const [upload, snapshot, uploading, uploadError] = useUpload();
 
   const idRef = useRef<string>(uuidv4());
   const fileName = `${user?.uid}_${idRef.current}`
@@ -199,6 +199,7 @@ export function useObjectRecognition(): [(
   const [started, setStarted] = useState(false);
   const loading =
     uploading || (started && !request?.exists() && !processingError);
+  const status = snapshot ? `Uploading ${Math.round(snapshot.bytesTransferred / snapshot.totalBytes * 100)}%` : loading ? 'Processing' : started ? 'Done' : '';
   const error = uploadError || processingError;
   const cachedFn = useCallback(
     (data: Blob | Uint8Array | ArrayBuffer) => {
@@ -208,7 +209,7 @@ export function useObjectRecognition(): [(
     [user]
   );
 
-  return [cachedFn, idRef.current, request?.get('object.objects'), loading, error];
+  return [cachedFn, idRef.current, status, request?.get('object.objects'), loading, error];
 }
 
 export function useUsageStats(): DataWithState<number, any> {

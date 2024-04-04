@@ -15,7 +15,7 @@ export default function ModalLayout({
 }) {
   return isDesktop ? (
     <Dialog open={open} onClose={onClose} keepMounted={keepMounted}>
-      <DialogContent sx={{ py: "36px" }}>{children}</DialogContent>
+      <DialogContent sx={{ py: "24px" }}>{children}</DialogContent>
     </Dialog>
   ) : (
     <SwipeableDrawer

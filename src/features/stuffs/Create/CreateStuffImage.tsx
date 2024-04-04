@@ -24,7 +24,7 @@ export default function CreateStuffImage({
   onItemSelect: (id: string, item: string) => void;
 }) {
   const user = useContext(UserContext);
-  const [upload, id, objects, loading, error] = useObjectRecognition();
+  const [upload, id, status, objects, loading, error] = useObjectRecognition();
   const [choice, setChoice] = useState<string>("");
   const processDisabled = !file || !user?.uid || loading;
   const proceedDisabled = !choice;
@@ -97,11 +97,11 @@ export default function CreateStuffImage({
           }
           onClick={handleFileUpload}
         >
-          Process {choices.length ? "again" : ""}
+          {loading ? status : `Process ${status ? "again" : ""}`}
           <Loading loading={loading}></Loading>
         </Button>
       </Box>
-      {!error && !loading && objects?.length && (
+      {!error && !loading && !!status && (
         <Box
           sx={{
             display: "flex",
@@ -112,7 +112,7 @@ export default function CreateStuffImage({
           }}
         >
           <Typography variant="h5" fontWeight={600}>
-            Recognized objects
+            {!!objects?.length ? "Recognized objects" : "No objects recognized"}
           </Typography>
 
           <RadioGroup
@@ -130,13 +130,15 @@ export default function CreateStuffImage({
               />
             ))}
           </RadioGroup>
-          <Button
-            variant="contained"
-            onClick={handleProceed}
-            disabled={proceedDisabled}
-          >
-            Proceed
-          </Button>
+          {!!objects?.length && (
+            <Button
+              variant="contained"
+              onClick={handleProceed}
+              disabled={proceedDisabled}
+            >
+              Proceed
+            </Button>
+          )}
         </Box>
       )}
     </Box>
