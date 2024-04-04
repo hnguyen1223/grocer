@@ -30,7 +30,9 @@ export default function StuffList({
           {stuffs.map((stuff, index) => (
             <div key={stuff.id}>
               <StuffRow stuff={stuff}></StuffRow>
-              {index < stuffs.length - 1 && <Divider />}
+              {index < stuffs.length - 1 && (
+                <Divider variant={isDesktop ? "fullWidth" : "middle"} />
+              )}
             </div>
           ))}
         </List>

@@ -13,7 +13,7 @@ import { GptVersion, StuffLocation } from "../../../shared/interfaces";
 import { Box, TextField, Typography, Button, useTheme } from "@mui/material";
 import { isDesktop } from "react-device-detect";
 import { useGetShelfLife } from "../../../shared/hooks";
-import { AutoAwesome } from "@mui/icons-material";
+import { AutoAwesome, SellOutlined } from "@mui/icons-material";
 import Loading from "../../../shared/components/Loading";
 import SvgGradient from "../../../shared/components/SvgGradient";
 import Durabilities from "../Durabilities";
@@ -119,7 +119,7 @@ export default function CreateStuffText({
   return (
     <>
       <Box>
-        <Box sx={{ flex: "1 1 auto", display: "flex", mb: 3 }}>
+        <Box sx={{ flex: "1 1 auto", display: "flex" }}>
           <TextField
             inputRef={inputRef}
             id="name"
@@ -149,6 +149,22 @@ export default function CreateStuffText({
             <SvgGradient></SvgGradient>
             <AutoAwesome sx={{ fill: "url(#gradient)" }} />
           </Button>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 0.5,
+            alignItems: "center",
+            visibility: category.data ? "visible" : "hidden",
+            mb: 1,
+          }}
+        >
+          <SellOutlined
+            sx={{ fontSize: "1.3rem", color: theme.palette.text.secondary }}
+          />
+          <Typography variant="subtitle1" color="text.secondary">
+            {category.data}
+          </Typography>
         </Box>
         <Durabilities
           selectedLocation={location}
