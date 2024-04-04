@@ -87,8 +87,11 @@ export default function CreateStuffText({
   }
 
   function handleGptChange() {
-    setGpt(gpt === GptVersion.THREE ? GptVersion.FOUR : GptVersion.THREE);
-    handleAI();
+    const newGpt =
+      gpt === GptVersion.THREE ? GptVersion.FOUR : GptVersion.THREE;
+    setGpt(newGpt);
+    clearState();
+    getShelfLife(name, newGpt);
   }
 
   const handleFocus: FocusEventHandler<

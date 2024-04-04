@@ -13,9 +13,9 @@ export default function Durabilities({
   onLocationSelect = () => {},
 }: {
   selectedLocation?: StuffLocation;
-  freezer: DataWithState<Durability, any, true, "object">;
-  fridge: DataWithState<Durability, any, true, "object">;
-  outside: DataWithState<Durability, any, true, "object">;
+  freezer: DataWithState<Durability, any>;
+  fridge: DataWithState<Durability, any>;
+  outside: DataWithState<Durability, any>;
   disabled?: boolean;
   onLocationSelect?: (location: StuffLocation) => void;
 }) {

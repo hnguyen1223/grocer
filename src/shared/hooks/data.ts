@@ -25,6 +25,7 @@ import { DataWithState } from "../interfaces/data.model";
 import { getGuessData } from "../constants/guest-data";
 import { useUpload } from "./firebase/storage";
 import { StorageError, UploadMetadata, UploadResult } from "firebase/storage";
+import { Logs, ModelUsage, RequestLog, RequestLogConverter } from "../interfaces/stats.model";
 
 export function useStuffs(): [
   Stuff[],
@@ -89,11 +90,11 @@ export function useGetShelfLife(existingRequestId?: string): {
   id: string;
   getShelfLife: (item: string, gpt: GptVersion) => void;
   clearShelfLife: () => void;
-  freezer: DataWithState<Durability, any, true, "object">;
-  fridge: DataWithState<Durability, any, true, "object">;
-  outside: DataWithState<Durability, any, true, "object">;
-  emoji: DataWithState<string, any, true, "object">;
-  category: DataWithState<string, any, true, "object">;
+  freezer: DataWithState<Durability, any>;
+  fridge: DataWithState<Durability, any>;
+  outside: DataWithState<Durability, any>;
+  emoji: DataWithState<string, any>;
+  category: DataWithState<string, any>;
 } {
   const [id, setId] = useState<string>(existingRequestId ?? uuidv4());
   const [fridge, setFridge] = useState<Durability>();
@@ -195,10 +196,10 @@ export function useObjectRecognition(): [(
 
   const idRef = useRef<string>(uuidv4());
   const fileName = `${user?.uid}_${idRef.current}`
-  const [request, processingError] = useLiveDb<any>(`users/${user?.uid}/requests/${idRef.current}`);
+  const [request, exist, processingError] = useLiveDb<any>(`users/${user?.uid}/requests/${idRef.current}`);
   const [started, setStarted] = useState(false);
   const loading =
-    uploading || (started && !request?.exists() && !processingError);
+    uploading || (started && !exist && !processingError);
   const status = snapshot ? `Uploading ${Math.round(snapshot.bytesTransferred / snapshot.totalBytes * 100)}%` : loading ? 'Processing' : started ? 'Done' : '';
   const error = uploadError || processingError;
   const cachedFn = useCallback(
@@ -209,13 +210,22 @@ export function useObjectRecognition(): [(
     [user]
   );
 
-  return [cachedFn, idRef.current, status, request?.get('object.objects'), loading, error];
+  return [cachedFn, idRef.current, status, request?.object.objects, loading, error];
 }
 
-export function useUsageStats(): DataWithState<number, any> {
+export function useUsageStats(): { weeklyUsage: number, modelUsage?: ModelUsage[], error: FirestoreError | undefined } {
   const user = useContext(UserContext);
-  const [userData, loading, error] = useDb<any>(`users/${user?.uid}`);
-  return [userData?.weeklyUsage ?? 0, loading, error];
+  const [userData, _1, userDataError] = useLiveDb<any>(`users/${user?.uid}`);
+  const [userRequests, _2, requestsError] = useLiveDb<Logs<RequestLog>[]>(`users/${user?.uid}/requests`, RequestLogConverter);
+  const modelUsage = Object.values(userRequests?.reduce((acc: { [key: string]: ModelUsage }, log) => {
+    Object.keys(log).forEach((key) => {
+      acc[log[key].model] = acc[log[key].model] ?? { model: log[key].model, count: 0, tokens: 0 };
+      acc[log[key].model].count++;
+      acc[log[key].model].tokens += (log[key].totalTokens ?? 0);
+    });
+    return acc;
+  }, {}) ?? {})
+  return { weeklyUsage: userData?.weeklyUsage ?? 0, modelUsage, error: userDataError || requestsError };
 }
 
 function mapResponse(str: string | undefined): Durability {

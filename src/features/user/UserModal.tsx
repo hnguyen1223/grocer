@@ -1,7 +1,7 @@
 import { useLocalStorage } from "react-use";
 import ModalLayout from "../../shared/components/ModalLayout";
 import UserInfo from "./UserInfo";
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import {
   SetUserModalContext,
   UserModalContext,
@@ -12,6 +12,10 @@ export default function UserModal() {
     useLocalStorage<boolean>("shownWelcome");
   const open = useContext(UserModalContext);
   const setModalOpen = useContext(SetUserModalContext);
+  const handleGuestSignIn = useCallback(
+    () => setModalOpen(false),
+    [setModalOpen]
+  );
 
   useEffect(() => {
     if (!shownWelcome) {
@@ -21,7 +25,7 @@ export default function UserModal() {
   }, []);
   return (
     <ModalLayout open={open} onClose={() => setModalOpen(!open)}>
-      <UserInfo onGuestSignIn={() => setModalOpen(false)}></UserInfo>
+      <UserInfo onGuestSignIn={handleGuestSignIn}></UserInfo>
     </ModalLayout>
   );
 }

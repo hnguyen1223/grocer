@@ -21,7 +21,7 @@ const DurabilityCard = memo(function DurabilityCard({
   isSelected: boolean;
   onSelect: (location: StuffLocation) => void;
   disabled?: boolean;
-  durability: DataWithState<Durability, any, true, "object">;
+  durability: DataWithState<Durability, any>;
 }) {
   const theme = useTheme();
   const isHorizontal = useIsHorizontal();

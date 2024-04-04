@@ -16,6 +16,7 @@ export enum QueryType {
 export type CallableFn<T, K> = (
   data: T
 ) => Promise<HttpsCallableResult<K> | undefined>;
+
 export interface AIRequest<T extends BaseQuery> {
   id: string;
   gpt: GptVersion;

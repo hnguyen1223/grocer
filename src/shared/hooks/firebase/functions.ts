@@ -10,7 +10,7 @@ import { CallableFn } from "../../interfaces";
 
 export default function useCallable<T, K>(
   name: string
-): DataWithState<CallableFn<T, K>, FunctionsError> {
+): DataWithState<CallableFn<T, K>, FunctionsError, 'array', false> {
   const [error, setError] = useState<FunctionsError>();
   const [loading, setLoading] = useState<boolean>(false);
 

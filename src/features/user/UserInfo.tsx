@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { memo, useContext } from "react";
 import { UserContext } from "../../core/UserProvider";
 import { Box, Button, Typography } from "@mui/material";
 import UserAvatar from "./UserAvatar";
@@ -6,7 +6,7 @@ import Welcome from "./Welcome";
 import { useSignOut } from "../../shared/hooks";
 import { auth } from "../../../firebase";
 import UserAIStat from "./UserAIStat";
-export default function UserInfo({
+const UserInfo = memo(function UserInfo({
   onGuestSignIn,
 }: {
   onGuestSignIn: () => void;
@@ -44,4 +44,5 @@ export default function UserInfo({
       )}
     </Box>
   );
-}
+});
+export default UserInfo;

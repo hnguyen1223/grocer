@@ -37,7 +37,7 @@ export function useProviderSignIn(
   providerId: AuthProviderID,
   scopes: string[] = [],
   customParameters: CustomParameters = {}
-): DataWithState<SignInFn<SignInMethod.PROVIDER>, AuthError> {
+): DataWithState<SignInFn<SignInMethod.PROVIDER>, AuthError, 'array', false> {
   const [error, setError] = useState<AuthError>();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -73,7 +73,7 @@ export function useProviderSignIn(
 
 export function useEmailAndPasswordSignIn(): DataWithState<
   SignInFn<SignInMethod.EMAIL_AND_PASSWORD>,
-  AuthError
+  AuthError, 'array', false
 > {
   const [error, setError] = useState<AuthError>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -95,7 +95,7 @@ export function useEmailAndPasswordSignIn(): DataWithState<
   return [cachedSignInFn, loading, error];
 }
 
-export function useSignOut(auth: Auth): DataWithState<SignOutFn, AuthError> {
+export function useSignOut(auth: Auth): DataWithState<SignOutFn, AuthError, 'array', false> {
   const [error, setError] = useState<AuthError>();
   const [loading, setLoading] = useState<boolean>(false);
   const cachedSignOutFn = useCallback(async () => {
