@@ -14,9 +14,10 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  Typography,
 } from "@mui/material";
 import { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { CreateModalTogglerContext } from "./CreateStuffProvider";
 import { isDesktop } from "react-device-detect";
 
@@ -38,10 +39,15 @@ export default function NavDrawer() {
       anchor="left"
     >
       <Toolbar variant={isDesktop ? "regular" : "dense"}>
-        {/* logo here */}
+        <Link to="/">
+          <img src="/grocer.svg" width="32px" />
+        </Link>
+        <Typography pl={2} variant="h5">
+          Grocer
+        </Typography>
       </Toolbar>
       <Divider />
-      <List>
+      <List sx={{ pl: 1 }}>
         <ListItem key="new" disablePadding>
           <ListItemButton onClick={() => setIsModalShown(true)} disableRipple>
             <ListItemIcon>

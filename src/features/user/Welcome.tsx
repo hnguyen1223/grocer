@@ -2,7 +2,10 @@ import { Box, Button, Typography } from "@mui/material";
 import { useProviderSignIn } from "../../shared/hooks";
 import { AuthProviderID } from "../../shared/interfaces";
 import { PersonOutline } from "@mui/icons-material";
+import { isDesktop } from "react-device-detect";
 
+const DESKTOP_LOGO_SIZE = "128px";
+const MOBILE_LOGO_SIZE = "72px";
 export default function Welcome({
   onGuestSignIn,
 }: {
@@ -18,7 +21,11 @@ export default function Welcome({
         alignItems: "center",
       }}
     >
-      <Typography variant="h3" sx={{ my: "8px" }}>
+      <img
+        src="/grocer.svg"
+        width={isDesktop ? DESKTOP_LOGO_SIZE : MOBILE_LOGO_SIZE}
+      />
+      <Typography variant="h3" sx={{ mt: 4, mb: 1 }}>
         Welcome to Grocer!
       </Typography>
       <p>

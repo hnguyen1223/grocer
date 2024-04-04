@@ -17,6 +17,7 @@ import { isDesktop } from "react-device-detect";
 import ViewControl from "./ViewControl";
 import { Outlet } from "react-router-dom";
 import { getExpiryDate } from "../../shared/utils/expiry";
+import Empty from "./Empty";
 
 export const StuffViewContext = createContext<StuffView | null>(
   StuffView.EXPIRY
@@ -34,9 +35,11 @@ export default function Stuffs() {
   };
   const [view, setView] = useState<StuffView>(StuffView.EXPIRY);
   const today = dayjs(new Date());
+  //TODO add view for finished stuffs
+  const unfishedStuffs = allStuffs.filter((stuff) => !stuff.status);
   const lists: { [key: string]: Stuff[] } = useMemo(() => {
-    const lists = allStuffs.reduce((acc: { [key: string]: Stuff[] }, stuff) => {
-      if (!stuff.status) {
+    const lists = unfishedStuffs.reduce(
+      (acc: { [key: string]: Stuff[] }, stuff) => {
         switch (view) {
           case StuffView.EXPIRY:
             {
@@ -65,9 +68,10 @@ export default function Stuffs() {
             acc[stuff.location].push(stuff);
             break;
         }
-      }
-      return acc;
-    }, {});
+        return acc;
+      },
+      {}
+    );
 
     // TODO improve sorting & add sorting controls
     Object.keys(lists).forEach(
@@ -103,7 +107,6 @@ export default function Stuffs() {
   return (
     <SetStuffViewContext.Provider value={setView}>
       <StuffViewContext.Provider value={view}>
-        <ViewControl></ViewControl>
         <Box
           sx={{
             overflowY: "auto",
@@ -114,21 +117,28 @@ export default function Stuffs() {
             pt: isDesktop ? 2 : 0,
           }}
         >
-          <Heading
-            show={!showHeader}
-            title="Stuffs"
-            subtitle={subtitle}
-          ></Heading>
+          {unfishedStuffs.length === 0 ? (
+            <Empty />
+          ) : (
+            <>
+              <ViewControl></ViewControl>
+              <Heading
+                show={!showHeader}
+                title="Stuffs"
+                subtitle={subtitle}
+              ></Heading>
 
-          {Object.keys(lists)
-            .sort()
-            .map((key) => (
-              <StuffList
-                key={key}
-                stuffs={lists[key]}
-                heading={key}
-              ></StuffList>
-            ))}
+              {Object.keys(lists)
+                .sort()
+                .map((key) => (
+                  <StuffList
+                    key={key}
+                    stuffs={lists[key]}
+                    heading={key}
+                  ></StuffList>
+                ))}
+            </>
+          )}
         </Box>
         <Outlet />
       </StuffViewContext.Provider>
