@@ -1,4 +1,4 @@
-import { Dispatch, useCallback, useContext, useEffect, useState } from "react";
+import { Dispatch, useCallback, useContext, useEffect, useRef, useState } from "react";
 import {
   Durability,
   StuffActionType,
@@ -7,26 +7,24 @@ import {
   StuffLocation,
 } from "../interfaces";
 import {
-  BaseRequest,
-  DurabiltityRequest,
-  DurabiltityResponse,
+  AIResponse,
   GptVersion,
+  AIRequest,
+  DurabiltityQuery,
+  BaseQuery,
+  QueryType,
 } from "../interfaces/api.model";
 import useCallable from "./firebase/functions";
 import { v4 as uuidv4 } from "uuid";
 import { UserContext, UserInitializedContext } from "../../core/UserProvider";
-import { useDb } from ".";
+import { useDb, useLiveDb } from ".";
 import { useLocalStorage } from "react-use";
-import {
-  FirestoreError,
-  deleteDoc,
-  doc,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { FirestoreError, deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
 import { firestore } from "../../../firebase";
 import { DataWithState } from "../interfaces/data.model";
 import { getGuessData } from "../constants/guest-data";
+import { useUpload } from "./firebase/storage";
+import { StorageError, UploadMetadata, UploadResult } from "firebase/storage";
 
 export function useStuffs(): [
   Stuff[],
@@ -105,51 +103,52 @@ export function useGetShelfLife(): {
   const [category, setCategory] = useState<string>("");
 
   const [getFreezer, freezerLoading, freezerError] = useCallable<
-    DurabiltityRequest,
-    DurabiltityResponse
-  >("getShelfLife");
+    AIRequest<DurabiltityQuery>,
+    AIResponse
+  >("queryAI");
   const [getFridge, fridgeLoading, fridgeError] = useCallable<
-    DurabiltityRequest,
-    DurabiltityResponse
-  >("getShelfLife");
+    AIRequest<DurabiltityQuery>,
+    AIResponse
+  >("queryAI");
   const [getOutside, outsideLoading, outsideError] = useCallable<
-    DurabiltityRequest,
-    DurabiltityResponse
-  >("getShelfLife");
+    AIRequest<DurabiltityQuery>,
+    AIResponse
+  >("queryAI");
   const [getEmoji, emojiLoading, emojiError] = useCallable<
-    BaseRequest,
-    DurabiltityResponse
-  >("getEmoji");
+    AIRequest<BaseQuery>,
+    AIResponse
+  >("queryAI");
   const [getCategory, categoryLoading, categoryError] = useCallable<
-    BaseRequest,
-    DurabiltityResponse
-  >("getCategory");
+    AIRequest<BaseQuery>,
+    AIResponse
+  >("queryAI");
 
   function clearShelfLife() {
     fridge && setFridge(undefined);
     freezer && setFreezer(undefined);
     outside && setOutside(undefined);
     emoji && setEmoji("");
+    category && setCategory("");
   }
 
-  async function getShelfLife(item: string, gpt: 3 | 4 = 3) {
-    setId(uuidv4());
+  async function getShelfLife(item: string, gpt: GptVersion = GptVersion.THREE, existingId?: string) {
+    setId(existingId ?? uuidv4());
     await Promise.allSettled([
-      getFreezer({ id, item, location: StuffLocation.FREEZER, gpt }).then(
+      getFreezer({ id, gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.FREEZER } }).then(
         (res) => setFreezer(mapResponse(res?.data?.response?.content))
       ),
-      getFridge({ id, item, location: StuffLocation.FRIDGE, gpt }).then((res) =>
+      getFridge({ id, gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.FRIDGE } }).then((res) =>
         setFridge(mapResponse(res?.data?.response?.content))
       ),
-      getOutside({ id, item, location: StuffLocation.OUTSIDE, gpt }).then(
+      getOutside({ id, gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.OUTSIDE } }).then(
         (res) => setOutside(mapResponse(res?.data?.response?.content))
       ),
-      getEmoji({ id, item, gpt }).then((res) =>
+      getEmoji({ id, gpt, queryType: QueryType.EMOJI, query: { item } }).then((res) =>
         setEmoji(
           (res?.data?.response?.content ?? "").replace(/[\w\\\/\s,\(\)]+/g, "")
         )
       ),
-      getCategory({ id, item, gpt }).then((res) =>
+      getCategory({ id, gpt, queryType: QueryType.CATEGORY, query: { item } }).then((res) =>
         setCategory((res?.data?.response?.content ?? "").trim())
       ),
     ]);
@@ -185,6 +184,31 @@ export function useGetShelfLife(): {
       error: categoryError,
     },
   };
+}
+
+export function useObjectRecognition(): [(
+  data: Blob | Uint8Array | ArrayBuffer,
+  metadata?: UploadMetadata | undefined
+) => Promise<UploadResult | undefined>, string, string[] | undefined, boolean, StorageError | FirestoreError | undefined] {
+  const user = useContext(UserContext);
+  const [upload, _, uploading, uploadError] = useUpload();
+
+  const idRef = useRef<string>(uuidv4());
+  const fileName = `${user?.uid}_${idRef.current}`
+  const [request, processingError] = useLiveDb<any>(`users/${user?.uid}/requests/${idRef.current}`);
+  const [started, setStarted] = useState(false);
+  const loading =
+    uploading || (started && !request?.exists() && !processingError);
+  const error = uploadError || processingError;
+  const cachedFn = useCallback(
+    (data: Blob | Uint8Array | ArrayBuffer) => {
+      setStarted(true);
+      return upload(`images/objects/${fileName}.jpg`, data);
+    },
+    [user]
+  );
+
+  return [cachedFn, idRef.current, request?.get('object.objects'), loading, error];
 }
 
 export function useUsageStats(): DataWithState<number, any> {

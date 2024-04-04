@@ -9,7 +9,7 @@ import UserProvider from "./core/UserProvider";
 import NavDrawer from "./core/Drawer";
 import Header from "./core/Header";
 import CreateStuffProvider from "./core/CreateStuffProvider";
-import CreateStuff from "./features/stuffs/CreateStuff";
+import CreateStuff from "./features/stuffs/Create/CreateStuff";
 import useIsHorizontal from "./shared/hooks/layout";
 import { isDesktop } from "react-device-detect";
 import NavBar from "./core/NavBar";

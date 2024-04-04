@@ -33,6 +33,7 @@ export default function NavBar() {
         aria-label="add"
         sx={{ position: "absolute", bottom: 24, right: "calc(50% - 28px)" }}
         onClick={() => setIsModalShown(true)}
+        id="mobile-add-button"
       >
         <Add />
       </Fab>

@@ -1,4 +1,3 @@
-import ModalLayout from "../../shared/components/ModalLayout";
 import {
   ChangeEvent,
   FocusEventHandler,
@@ -8,30 +7,30 @@ import {
   useRef,
   useState,
 } from "react";
-import { StuffsDispatchContext } from "../../core/StuffsProvider";
-import { StuffActionType } from "../../shared/interfaces/reducer.model";
-import { StuffLocation } from "../../shared/interfaces";
-import {
-  CreateModalContext,
-  CreateModalTogglerContext,
-} from "../../core/CreateStuffProvider";
+import { StuffsDispatchContext } from "../../../core/StuffsProvider";
+import { StuffActionType } from "../../../shared/interfaces/reducer.model";
+import { GptVersion, StuffLocation } from "../../../shared/interfaces";
 import { Box, TextField, Typography, Button, useTheme } from "@mui/material";
 import { isDesktop } from "react-device-detect";
-import { useGetShelfLife } from "../../shared/hooks";
+import { useGetShelfLife } from "../../../shared/hooks";
 import { AutoAwesome } from "@mui/icons-material";
-import Loading from "../../shared/components/Loading";
-import SvgGradient from "../../shared/components/SvgGradient";
-import Durabilities from "./Durabilities";
+import Loading from "../../../shared/components/Loading";
+import SvgGradient from "../../../shared/components/SvgGradient";
+import Durabilities from "../Durabilities";
 
-export default function CreateStuff() {
+export default function CreateStuffText({
+  nameFromImage,
+  onClose,
+}: {
+  nameFromImage?: string;
+  onClose: () => void;
+}) {
   const theme = useTheme();
-  const isModalShown = useContext(CreateModalContext);
-  const setIsModalShown = useContext(CreateModalTogglerContext);
   const dispatch = useContext(StuffsDispatchContext);
-  const [name, setName] = useState<string>("");
+  const [name, setName] = useState<string>(nameFromImage ?? "");
   const [location, setLocation] = useState<StuffLocation>();
   const [expiryDate, setExpiryDate] = useState<string>();
-  const [gpt, setGpt] = useState<number>(3);
+  const [gpt, setGpt] = useState<GptVersion>(GptVersion.THREE);
   const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement>();
   const {
     getShelfLife,
@@ -57,7 +56,7 @@ export default function CreateStuff() {
     clearState();
   }
 
-  function handleAction() {
+  function handleAdd() {
     if (isFormValid) {
       const stuff = {
         id,
@@ -76,7 +75,7 @@ export default function CreateStuff() {
         type: StuffActionType.ADD,
         stuff,
       });
-      handleClose();
+      onClose();
     }
   }
 
@@ -85,15 +84,8 @@ export default function CreateStuff() {
     getShelfLife(name, gpt);
   }
 
-  // Need to reset state manual as compoent may be kept mounted in drawer on mobile layout
-  // or due to this dialog bug when on desktop https://github.com/mui/material-ui/issues/10572
-  function handleClose() {
-    setIsModalShown(false);
-    clearState(true);
-  }
-
   function handleGptChange() {
-    setGpt(gpt === 3 ? 4 : 3);
+    setGpt(gpt === GptVersion.THREE ? GptVersion.FOUR : GptVersion.THREE);
     handleAI();
   }
 
@@ -115,19 +107,21 @@ export default function CreateStuff() {
   }
 
   useEffect(() => {
-    if (isDesktop && isModalShown && inputRef.current) {
+    if (nameFromImage) {
+      handleAI();
+    } else if (isDesktop && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [isModalShown]);
+  }, []);
 
   return (
-    <ModalLayout open={isModalShown} onClose={handleClose}>
+    <>
       <Box>
         <Box sx={{ flex: "1 1 auto", display: "flex", mb: 3 }}>
           <TextField
             inputRef={inputRef}
             id="name"
-            placeholder="New Item✨✨"
+            placeholder="New Item"
             variant="outlined"
             value={displayName}
             onChange={handleNameInput}
@@ -171,9 +165,9 @@ export default function CreateStuff() {
             }}
           >
             <Typography variant="subtitle2" px={2}>
-              Powered by GPT-{gpt}.{gpt === 3 && " Not happy?"}
+              Powered by GPT-{gpt}.{gpt === GptVersion.THREE && " Not happy?"}
             </Typography>
-            {gpt === 3 && (
+            {gpt === GptVersion.THREE && (
               <Button variant="outlined" size="small" onClick={handleGptChange}>
                 Try GPT-4
               </Button>
@@ -183,17 +177,13 @@ export default function CreateStuff() {
       </Box>
 
       <Box display="flex" justifyContent="right" marginTop={2} gap={1}>
-        <Button onClick={handleClose} color="warning">
+        <Button onClick={onClose} color="warning">
           Cancel
         </Button>
-        <Button
-          disabled={!isFormValid}
-          onClick={handleAction}
-          variant="contained"
-        >
+        <Button disabled={!isFormValid} onClick={handleAdd} variant="contained">
           Add
         </Button>
       </Box>
-    </ModalLayout>
+    </>
   );
 }

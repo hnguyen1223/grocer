@@ -2,28 +2,41 @@ import { HttpsCallableResult } from "firebase/functions";
 import { StuffLocation } from ".";
 
 export enum GptVersion {
-  THREE = 3,
-  FOUR = 4,
+  THREE = '3.5',
+  FOUR = '4',
 }
+
+export enum QueryType {
+  DURABILITY = "durability",
+  EMOJI = "emoji",
+  CATEGORY = "category",
+  OBJECT = "object",
+}
+
 export type CallableFn<T, K> = (
   data: T
 ) => Promise<HttpsCallableResult<K> | undefined>;
-
-export interface BaseRequest {
+export interface AIRequest<T extends BaseQuery> {
   id: string;
-  item: string;
   gpt: GptVersion;
+  queryType: QueryType;
+  query: T
 }
 
-export interface DurabiltityRequest extends BaseRequest {
-  location: StuffLocation;
-}
-
-export interface DurabiltityResponse {
+export interface AIResponse {
   response: {
     id: string;
     content: string;
     finish_reason: string;
-    gpt: GptVersion;
+    model: string;
   };
 }
+
+export interface BaseQuery {
+  item: string;
+}
+
+export interface DurabiltityQuery extends BaseQuery {
+  stuffLocation: StuffLocation;
+}
+

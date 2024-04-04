@@ -1,7 +1,10 @@
 import {
   DocumentData,
+  DocumentSnapshot,
   FirestoreDataConverter,
   FirestoreError,
+  QueryDocumentSnapshot,
+  QueryFieldFilterConstraint,
   Unsubscribe,
   collection,
   doc,
@@ -75,19 +78,26 @@ export function useDb<T extends DocumentData | DocumentData[]>(
 export function useLiveDb<T extends DocumentData>(
   path: string,
   converter?: FirestoreDataConverter<T, DocumentData>
-): [T | undefined, FirestoreError | undefined];
+): [DocumentSnapshot<T> | undefined, FirestoreError | undefined];
 export function useLiveDb<T extends DocumentData[]>(
   path: string,
-  converter?: FirestoreDataConverter<T, DocumentData>
-): [T[] | undefined, FirestoreError | undefined];
+  converter?: FirestoreDataConverter<T, DocumentData>,
+  filters?: QueryFieldFilterConstraint[]
+): [QueryDocumentSnapshot<T>[] | undefined, FirestoreError | undefined];
 export function useLiveDb<T extends DocumentData | DocumentData[]>(
   path: string,
   converter: FirestoreDataConverter<T, DocumentData> = {
     toFirestore: (data) => data,
     fromFirestore: (snapshot) => snapshot.data() as any,
-  }
-): [T | T[] | undefined, FirestoreError | undefined] {
-  const [snapshot, setSnapshot] = useState<T | T[] | undefined>();
+  },
+  filters: QueryFieldFilterConstraint[] = []
+): [
+  DocumentSnapshot<T> | QueryDocumentSnapshot<T>[] | undefined,
+  FirestoreError | undefined
+] {
+  const [snapshot, setSnapshot] = useState<
+    DocumentSnapshot<T> | QueryDocumentSnapshot<T>[] | undefined
+  >();
   const [error, setError] = useState<FirestoreError>();
   useEffect(() => {
     try {
@@ -99,17 +109,20 @@ export function useLiveDb<T extends DocumentData | DocumentData[]>(
       let unsubscribe: Unsubscribe;
       setError(undefined);
       if (isCollection) {
-        const ref = query(collection(firestore, path).withConverter(converter));
+        const ref = query(
+          collection(firestore, path).withConverter(converter),
+          ...filters
+        );
         unsubscribe = onSnapshot(
           ref,
-          (qSnapshot) => setSnapshot(qSnapshot.docs.map((doc) => doc.data())),
+          (qSnapshot) => setSnapshot(qSnapshot.docs),
           setError
         );
       } else {
         const ref = doc(firestore, path).withConverter(converter);
         unsubscribe = onSnapshot(
           ref,
-          (snapshot) => setSnapshot(snapshot.data()),
+          (snapshot) => setSnapshot(snapshot),
           setError
         );
       }
@@ -119,7 +132,7 @@ export function useLiveDb<T extends DocumentData | DocumentData[]>(
       setError(error as FirestoreError);
       setSnapshot(undefined);
     }
-  }, [path, converter]);
+  }, []);
 
   return [snapshot, error];
 }

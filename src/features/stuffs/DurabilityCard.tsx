@@ -2,13 +2,13 @@ import { Box, Card, CardActionArea, Typography, useTheme } from "@mui/material";
 import { Durability, StuffLocation } from "../../shared/interfaces";
 import { ThumbDownOutlined, ThumbUpOutlined } from "@mui/icons-material";
 import { isDesktop } from "react-device-detect";
-import { useOrientation } from "react-use";
 import { memo, useCallback } from "react";
 import Loading from "../../shared/components/Loading";
 import LocationIcon from "../../shared/components/LocationIcon";
 import { DataWithState } from "../../shared/interfaces/data.model";
+import useIsHorizontal from "../../shared/hooks/layout";
 
-const CARD_WIDTH = 148;
+const CARD_WIDTH = 172;
 
 const DurabilityCard = memo(function DurabilityCard({
   durability,
@@ -24,14 +24,13 @@ const DurabilityCard = memo(function DurabilityCard({
   durability: DataWithState<Durability, any, true, "object">;
 }) {
   const theme = useTheme();
-  const orientation = useOrientation();
+  const isHorizontal = useIsHorizontal();
 
   const handleClick = useCallback(() => {
     onSelect(stuffLocation);
   }, [onSelect, stuffLocation]);
 
-  const isHorizontalLayout =
-    isDesktop || orientation.angle === 90 || orientation.angle === 270;
+  const isHorizontalLayout = isDesktop || isHorizontal;
   const durationText = durability.data?.days
     ? `${durability.data.days} day${durability.data.days > 1 ? "s" : ""}`
     : durability.data?.hours

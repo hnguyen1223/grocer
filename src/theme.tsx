@@ -64,14 +64,14 @@ const baseThemeOptions: ThemeOptions = {
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 6,
+          borderRadius: 8,
         },
       },
     },
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 6,
+          borderRadius: 8,
           textTransform: "none",
         },
       },
@@ -79,7 +79,7 @@ const baseThemeOptions: ThemeOptions = {
     MuiPopover: {
       styleOverrides: {
         paper: {
-          borderRadius: 6,
+          borderRadius: 8,
         },
       },
     },
@@ -113,6 +113,14 @@ const baseThemeOptions: ThemeOptions = {
         paperAnchorBottom: {
           borderTopLeftRadius: 8,
           borderTopRightRadius: 8,
+          // transition: "all 225ms cubic-bezier(0, 0, 0.2, 1) 0ms",
+        },
+      },
+    },
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: 8,
         },
       },
     },

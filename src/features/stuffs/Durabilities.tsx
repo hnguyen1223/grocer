@@ -26,7 +26,7 @@ export default function Durabilities({
       flexWrap="wrap"
       rowGap={2}
       columnGap={2}
-      sx={{ width: isDesktop ? 480 : "100%", justifyContent: "center" }}
+      sx={{ width: isDesktop ? "auto" : "100%", justifyContent: "center" }}
     >
       <DurabilityCard
         stuffLocation={StuffLocation.FREEZER}
