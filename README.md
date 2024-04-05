@@ -1,30 +1,28 @@
-# React + TypeScript + Vite
+<img align="left" width="64" alt="Screenshot 2024-04-04 at 10 09 29 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/545fd57f-ca85-4142-b941-491037a5f265">
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Grocer
+This is a simple WIP app to manage food spoilage. Built as a pet project for personal use with React frontend & Firebase backend with OpenAI's GPT & Google Cloud Vision integration for text query and object recognition.
 
-Currently, two official plugins are available:
+[Demo](https://grocer.huynguyen.ca/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+- [x] Add & edit items
+- [x] AI text query
+- [x] Image input & object recognition
+- [ ] Charts
+- [ ] Search
+- [ ] Manual expiry date entry
+- [x] Accounts (Google, Github)
+- [x] User & guest data persistence
+- [x] [BE] Request limits and logs
+- [x] [BE] Upload & account cleanups
+- [x] [BE] Security rules for storage & database
+- [ ] [BE] Try out new multimodal models such as GPT-4 Vision or Gemini Pro Vision for improved object recognition?
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Screenshots
+<img width="224" alt="Screenshot 2024-04-04 at 10 09 29 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/8113bcce-d9fd-48a5-bbe9-ea1c8eb9f551">
+<img width="224" alt="Screenshot 2024-04-04 at 10 10 00 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/6b3a88b5-f1ad-44a9-85e8-d68d7f20d8a8">
+<img width="224" alt="Screenshot 2024-04-04 at 10 10 09 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/f9272d2f-4c78-4104-9136-2927f6cef478">
+<img width="224" alt="Screenshot 2024-04-04 at 10 09 39 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/5ab5f3ab-6ec7-4996-8444-e45fa54f1faa">
+<img width="452" alt="Screenshot 2024-04-04 at 10 00 33 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/22757de1-633b-418e-9d57-05b9a8ecd375">
+<img width="452" alt="Screenshot 2024-04-04 at 10 01 23 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/2b65898c-9ada-48ab-b9f7-2f364340e01c">
