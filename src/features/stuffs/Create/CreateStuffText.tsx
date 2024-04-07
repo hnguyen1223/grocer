@@ -17,14 +17,13 @@ import { AutoAwesome, SellOutlined } from "@mui/icons-material";
 import Loading from "../../../shared/components/Loading";
 import SvgGradient from "../../../shared/components/SvgGradient";
 import Durabilities from "../Durabilities";
+import { v4 as uuidv4 } from "uuid";
 
 export default function CreateStuffText({
   nameFromImage,
-  existingRequestId,
   onClose,
 }: {
   nameFromImage?: string;
-  existingRequestId?: string;
   onClose: () => void;
 }) {
   const theme = useTheme();
@@ -40,10 +39,9 @@ export default function CreateStuffText({
     freezer,
     fridge,
     outside,
-    id,
     emoji,
     category,
-  } = useGetShelfLife(existingRequestId);
+  } = useGetShelfLife();
 
   const isFormValid = name && location;
   const loading = freezer.loading || fridge.loading || outside.loading;
@@ -61,7 +59,7 @@ export default function CreateStuffText({
   function handleAdd() {
     if (isFormValid) {
       const stuff = {
-        id,
+        id: uuidv4(),
         name,
         location,
         durabilities: {

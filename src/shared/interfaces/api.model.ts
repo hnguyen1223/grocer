@@ -18,7 +18,6 @@ export type CallableFn<T, K> = (
 ) => Promise<HttpsCallableResult<K> | undefined>;
 
 export interface AIRequest<T extends BaseQuery> {
-  id: string;
   gpt: GptVersion;
   queryType: QueryType;
   query: T
@@ -26,7 +25,6 @@ export interface AIRequest<T extends BaseQuery> {
 
 export interface AIResponse {
   response: {
-    id: string;
     content: string;
     finish_reason: string;
     model: string;

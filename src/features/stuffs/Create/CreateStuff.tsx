@@ -13,7 +13,6 @@ export default function CreateStuff() {
   const setIsModalShown = useContext(CreateModalTogglerContext);
 
   const [nameFromImage, setNameFromimage] = useState<string>();
-  const [existingRequestId, setExistingRequestId] = useState<string>();
   const [file, setFile] = useState<File | null>(null);
   const [method, setMethod] = useState<InputMethod>();
   const imgInputRef = useRef<HTMLInputElement | null>(null);
@@ -52,8 +51,7 @@ export default function CreateStuff() {
     }
   }
 
-  function handleItemSelect(id: string, item: string) {
-    setExistingRequestId(id);
+  function handleItemSelect(item: string) {
     setNameFromimage(item);
   }
 
@@ -77,7 +75,6 @@ export default function CreateStuff() {
         {showText && (
           <CreateStuffText
             nameFromImage={nameFromImage}
-            existingRequestId={existingRequestId}
             onClose={handleClose}
           ></CreateStuffText>
         )}

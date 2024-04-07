@@ -21,10 +21,10 @@ export default function CreateStuffImage({
 }: {
   file: File | null;
   onReSelect: () => void;
-  onItemSelect: (id: string, item: string) => void;
+  onItemSelect: (item: string) => void;
 }) {
   const user = useContext(UserContext);
-  const [upload, id, status, objects, loading, error] = useObjectRecognition();
+  const [upload, status, objects, loading, error] = useObjectRecognition();
   const [choice, setChoice] = useState<string>("");
   const processDisabled = !file || !user?.uid || loading;
   const proceedDisabled = !choice;
@@ -54,7 +54,7 @@ export default function CreateStuffImage({
 
   function handleProceed() {
     if (choice) {
-      onItemSelect(id, choice);
+      onItemSelect(choice);
     }
   }
 

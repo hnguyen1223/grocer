@@ -1,29 +1,21 @@
-import { DocumentData, FirestoreDataConverter, Timestamp } from "firebase/firestore";
-import { QueryType, StuffLocation } from ".";
+import { FirestoreDataConverter, Timestamp } from "firebase/firestore";
+import { QueryType } from ".";
 
-export type RequestType = StuffLocation | QueryType.CATEGORY | QueryType.EMOJI | QueryType.OBJECT;
-
-export type Logs<T> = {
-    [key in RequestType]?: T
-} & DocumentData
-
-export interface RequestLog {
-    completionTokens: number;
-    promptTokens: number;
-    totalTokens: number;
+export interface BaseLog {
+    queryType: QueryType;
     model: string;
-    finishReason: string;
-    timestamp: number;
     responseTime: number;
+    timestamp: number
 }
-interface DbRequestLog {
-    completion_tokens: number;
-    prompt_tokens: number;
-    total_tokens: number;
-    model: string;
-    finish_reason: string;
-    timestamp: Timestamp;
-    responseTime: number;
+
+export interface GptLog extends BaseLog {
+    tokens: number;
+    finishReason: string;
+}
+
+export interface ObjectRecognitionLog extends BaseLog {
+    objects: string[];
+    fileSize: number;
 }
 
 export interface ModelUsage {
@@ -32,21 +24,10 @@ export interface ModelUsage {
     tokens: number
 }
 
-export const RequestLogConverter: FirestoreDataConverter<Logs<RequestLog>, Logs<DbRequestLog>> = {
+export const RequestLogConverter: FirestoreDataConverter<BaseLog, any> = {
     fromFirestore: (snapshot) => {
         const data = snapshot.data();
-        return Object.keys(data).filter(key => key !== 'id').reduce((acc: Logs<RequestLog>, key) => {
-            acc[key as RequestType] = {
-                completionTokens: data[key].completion_tokens,
-                promptTokens: data[key].prompt_tokens,
-                totalTokens: data[key].total_tokens,
-                model: data[key].model,
-                finishReason: data[key].finish_reason,
-                timestamp: (data[key].timestamp as Timestamp).seconds,
-                responseTime: data[key].response_time
-            }
-            return acc
-        }, {})
+        return { ...data, timestamp: (data.timestamp as Timestamp).seconds } as BaseLog;
     },
     toFirestore: (_) => {
         throw new Error('Not implemented');

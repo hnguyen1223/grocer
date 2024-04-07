@@ -25,7 +25,7 @@ import { DataWithState } from "../interfaces/data.model";
 import { getGuessData } from "../constants/guest-data";
 import { useUpload } from "./firebase/storage";
 import { StorageError, UploadMetadata, UploadResult } from "firebase/storage";
-import { Logs, ModelUsage, RequestLog, RequestLogConverter } from "../interfaces/stats.model";
+import { BaseLog, GptLog, ModelUsage, RequestLogConverter } from "../interfaces/stats.model";
 
 export function useStuffs(): [
   Stuff[],
@@ -86,8 +86,7 @@ export function useStuffs(): [
   return [stuffs, dispatchWitSideEffect, loading, error];
 }
 
-export function useGetShelfLife(existingRequestId?: string): {
-  id: string;
+export function useGetShelfLife(): {
   getShelfLife: (item: string, gpt: GptVersion) => void;
   clearShelfLife: () => void;
   freezer: DataWithState<Durability, any>;
@@ -96,7 +95,6 @@ export function useGetShelfLife(existingRequestId?: string): {
   emoji: DataWithState<string, any>;
   category: DataWithState<string, any>;
 } {
-  const [id, setId] = useState<string>(existingRequestId ?? uuidv4());
   const [fridge, setFridge] = useState<Durability>();
   const [freezer, setFreezer] = useState<Durability>();
   const [outside, setOutside] = useState<Durability>();
@@ -133,30 +131,28 @@ export function useGetShelfLife(existingRequestId?: string): {
   }
 
   async function getShelfLife(item: string, gpt: GptVersion = GptVersion.THREE, existingId?: string) {
-    setId(existingId ?? uuidv4());
     await Promise.allSettled([
-      getFreezer({ id, gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.FREEZER } }).then(
+      getFreezer({ gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.FREEZER } }).then(
         (res) => setFreezer(mapResponse(res?.data?.response?.content))
       ),
-      getFridge({ id, gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.FRIDGE } }).then((res) =>
+      getFridge({ gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.FRIDGE } }).then((res) =>
         setFridge(mapResponse(res?.data?.response?.content))
       ),
-      getOutside({ id, gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.OUTSIDE } }).then(
+      getOutside({ gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.OUTSIDE } }).then(
         (res) => setOutside(mapResponse(res?.data?.response?.content))
       ),
-      getEmoji({ id, gpt, queryType: QueryType.EMOJI, query: { item } }).then((res) =>
+      getEmoji({ gpt, queryType: QueryType.EMOJI, query: { item } }).then((res) =>
         setEmoji(
           (res?.data?.response?.content ?? "").replace(/[\w\\\/\s,\(\)]+/g, "")
         )
       ),
-      getCategory({ id, gpt, queryType: QueryType.CATEGORY, query: { item } }).then((res) =>
+      getCategory({ gpt, queryType: QueryType.CATEGORY, query: { item } }).then((res) =>
         setCategory((res?.data?.response?.content ?? "").trim())
       ),
     ]);
   }
 
   return {
-    id,
     getShelfLife,
     clearShelfLife,
     freezer: {
@@ -190,7 +186,7 @@ export function useGetShelfLife(existingRequestId?: string): {
 export function useObjectRecognition(): [(
   data: Blob | Uint8Array | ArrayBuffer,
   metadata?: UploadMetadata | undefined
-) => Promise<UploadResult | undefined>, string, string, string[] | undefined, boolean, StorageError | FirestoreError | undefined] {
+) => Promise<UploadResult | undefined>, string, string[] | undefined, boolean, StorageError | FirestoreError | undefined] {
   const user = useContext(UserContext);
   const [upload, snapshot, uploading, uploadError] = useUpload();
 
@@ -210,19 +206,17 @@ export function useObjectRecognition(): [(
     [user]
   );
 
-  return [cachedFn, idRef.current, status, request?.object.objects, loading, error];
+  return [cachedFn, status, request?.objects, loading, error];
 }
 
 export function useUsageStats(): { weeklyUsage: number, modelUsage?: ModelUsage[], error: FirestoreError | undefined } {
   const user = useContext(UserContext);
   const [userData, _1, userDataError] = useLiveDb<any>(`users/${user?.uid}`);
-  const [userRequests, _2, requestsError] = useLiveDb<Logs<RequestLog>[]>(`users/${user?.uid}/requests`, RequestLogConverter);
+  const [userRequests, _2, requestsError] = useLiveDb<BaseLog[]>(`users/${user?.uid}/requests`, RequestLogConverter);
   const modelUsage = Object.values(userRequests?.reduce((acc: { [key: string]: ModelUsage }, log) => {
-    Object.keys(log).forEach((key) => {
-      acc[log[key].model] = acc[log[key].model] ?? { model: log[key].model, count: 0, tokens: 0 };
-      acc[log[key].model].count++;
-      acc[log[key].model].tokens += (log[key].totalTokens ?? 0);
-    });
+    acc[log.model] = acc[log.model] ?? { model: log.model, count: 0, tokens: 0 };
+    acc[log.model].count++;
+    acc[log.model].tokens += ((<GptLog>log).tokens ?? 0);
     return acc;
   }, {}) ?? {})
   return { weeklyUsage: userData?.weeklyUsage ?? 0, modelUsage, error: userDataError || requestsError };
