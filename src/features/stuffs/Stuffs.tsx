@@ -96,7 +96,7 @@ export default function Stuffs() {
     }
     window.addEventListener("scroll", handleScroll, true);
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll, true);
     };
   }, []);
 
