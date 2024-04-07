@@ -1,23 +1,16 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { StuffsContext } from "../../core/StuffsProvider";
 import dayjs from "dayjs";
 import { Stuff, StuffView } from "../../shared/interfaces";
 import StuffList from "./StuffList";
 import { Box } from "@mui/material";
 import { HeaderContext } from "../../core/HeaderProvider";
-import Heading from "../../shared/components/Heading";
 import { isDesktop } from "react-device-detect";
 import ViewControl from "./ViewControl";
 import { Outlet } from "react-router-dom";
 import { getExpiryDate } from "../../shared/utils/expiry";
 import Empty from "./Empty";
+import ScrollToTopHeading from "../../core/ScrollToTopHeading";
 
 export const StuffViewContext = createContext<StuffView | null>(
   StuffView.EXPIRY
@@ -27,12 +20,7 @@ export const SetStuffViewContext = createContext<(view: StuffView) => void>(
 );
 export default function Stuffs() {
   const allStuffs = useContext(StuffsContext);
-  const { showHeader, setHeader, setShowHeader } = useContext(HeaderContext);
-  const showHeaderRef = useRef<boolean>(!!showHeader);
-  const setShowHeaderRef = (show: boolean) => {
-    showHeaderRef.current = show;
-    setShowHeader?.(show);
-  };
+  const { setHeader } = useContext(HeaderContext);
   const [view, setView] = useState<StuffView>(StuffView.EXPIRY);
   const today = dayjs(new Date());
   //TODO add view for finished stuffs
@@ -87,21 +75,8 @@ export default function Stuffs() {
     allStuffs.length + " item" + (allStuffs.length > 1 ? "s" : "");
 
   useEffect(() => {
-    function handleScroll(e: any) {
-      if (e.target.scrollTop > 24 && !showHeaderRef.current) {
-        setShowHeaderRef(true);
-      } else if (e.target.scrollTop <= 24 && showHeaderRef.current) {
-        setShowHeaderRef(false);
-      }
-    }
-    window.addEventListener("scroll", handleScroll, true);
-    return () => {
-      window.removeEventListener("scroll", handleScroll, true);
-    };
-  }, []);
-
-  useEffect(() => {
     setHeader?.({ title: "Stuffs", subtitle });
+    return () => setHeader?.({ title: "", subtitle: "" });
   }, [allStuffs]);
 
   return (
@@ -120,12 +95,10 @@ export default function Stuffs() {
           ) : (
             <>
               <ViewControl></ViewControl>
-              <Heading
-                show={!showHeader}
+              <ScrollToTopHeading
                 title="Stuffs"
                 subtitle={subtitle}
-              ></Heading>
-
+              ></ScrollToTopHeading>
               {Object.keys(lists)
                 .sort()
                 .map((key) => (
