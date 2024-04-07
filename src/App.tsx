@@ -43,6 +43,7 @@ function App() {
                         pb: isHorizontalLayout ? "0" : "52px",
                         px: "8px",
                         height: "100%",
+                        overflowY: "auto",
                       }}
                     >
                       <Outlet />

@@ -37,3 +37,4 @@ export interface Stuff extends DocumentData {
   durabilities: Durabilities;
   status?: StuffStatus;
 }
+

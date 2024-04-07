@@ -109,8 +109,6 @@ export default function Stuffs() {
       <StuffViewContext.Provider value={view}>
         <Box
           sx={{
-            overflowY: "auto",
-            height: "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: isDesktop ? "center" : "stretch",

@@ -25,7 +25,6 @@ import { DataWithState } from "../interfaces/data.model";
 import { getGuessData } from "../constants/guest-data";
 import { useUpload } from "./firebase/storage";
 import { StorageError, UploadMetadata, UploadResult } from "firebase/storage";
-import { BaseLog, GptLog, ModelUsage, RequestLogConverter } from "../interfaces/stats.model";
 
 export function useStuffs(): [
   Stuff[],
@@ -130,7 +129,7 @@ export function useGetShelfLife(): {
     category && setCategory("");
   }
 
-  async function getShelfLife(item: string, gpt: GptVersion = GptVersion.THREE, existingId?: string) {
+  async function getShelfLife(item: string, gpt: GptVersion = GptVersion.THREE) {
     await Promise.allSettled([
       getFreezer({ gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.FREEZER } }).then(
         (res) => setFreezer(mapResponse(res?.data?.response?.content))
@@ -207,19 +206,6 @@ export function useObjectRecognition(): [(
   );
 
   return [cachedFn, status, request?.objects, loading, error];
-}
-
-export function useUsageStats(): { weeklyUsage: number, modelUsage?: ModelUsage[], error: FirestoreError | undefined } {
-  const user = useContext(UserContext);
-  const [userData, _1, userDataError] = useLiveDb<any>(`users/${user?.uid}`);
-  const [userRequests, _2, requestsError] = useLiveDb<BaseLog[]>(`users/${user?.uid}/requests`, RequestLogConverter);
-  const modelUsage = Object.values(userRequests?.reduce((acc: { [key: string]: ModelUsage }, log) => {
-    acc[log.model] = acc[log.model] ?? { model: log.model, count: 0, tokens: 0 };
-    acc[log.model].count++;
-    acc[log.model].tokens += ((<GptLog>log).tokens ?? 0);
-    return acc;
-  }, {}) ?? {})
-  return { weeklyUsage: userData?.weeklyUsage ?? 0, modelUsage, error: userDataError || requestsError };
 }
 
 function mapResponse(str: string | undefined): Durability {

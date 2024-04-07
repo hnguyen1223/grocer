@@ -16,6 +16,7 @@
     "@mui/lab": "^5.0.0-alpha.169",
     "@mui/material": "^5.15.14",
     "@mui/x-date-pickers": "^7.0.0",
+    "d3": "^7.9.0",
     "dayjs": "^1.11.10",
     "firebase": "^10.9.0",
     "react": "^18.2.0",
@@ -25,6 +26,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/d3": "^7.4.3",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@types/uuid": "^9.0.8",
