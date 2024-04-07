@@ -20,11 +20,13 @@ import { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { CreateModalTogglerContext } from "./CreateStuffProvider";
 import { isDesktop } from "react-device-detect";
+import { StuffsContext } from "./StuffsProvider";
 
 const DRAWER_WIDTH = 256;
 
 export default function NavDrawer() {
   const setIsModalShown = useContext(CreateModalTogglerContext);
+  const stuffs = useContext(StuffsContext);
   return (
     <Drawer
       sx={{
@@ -62,7 +64,11 @@ export default function NavDrawer() {
               <KitchenOutlined className="nav-icon" />
               <Kitchen className="nav-icon-active" sx={{ display: "none" }} />
             </ListItemIcon>
-            <ListItemText primary="Stuffs" />
+            <ListItemText
+              primary="Stuffs"
+              secondary={stuffs.length || ""}
+              sx={{ display: "flex", justifyContent: "space-between" }}
+            />
           </ListItemButton>
         </ListItem>
         <ListItem key="stats" disablePadding>
