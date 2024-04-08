@@ -15,25 +15,36 @@ export default function Stats() {
     return () => setHeader?.({ title: "", subtitle: "" });
   }, []);
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexWrap: "wrap",
-        justifyContent: "center",
-        columnGap: 12,
-        rowGap: 2,
-        pt: isDesktop ? 4 : 0,
-        pb: isDesktop ? 0 : 2,
-        px: 2,
-      }}
-    >
+    <Box pt={isDesktop ? 4 : 0}>
       <ScrollToTopHeading title="Statistics" subtitle=""></ScrollToTopHeading>
-      {!!itemsData[0]?.length && (
-        <PieChart data={itemsData} title="Item Stats"></PieChart>
-      )}
-      {!!modelUsage[0]?.length && (
-        <PieChart data={modelUsage} title="Usage Stats"></PieChart>
-      )}
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          columnGap: 12,
+          rowGap: 2,
+          pb: isDesktop ? 0 : 2,
+          pt: isDesktop ? 4 : 2,
+          px: 2,
+        }}
+      >
+        {!!itemsData[0]?.length && (
+          <PieChart data={itemsData} title="Item Stats"></PieChart>
+        )}
+        {!!modelUsage[0]?.length && (
+          <PieChart
+            data={modelUsage}
+            title="Usage Stats"
+            config={{
+              withDonut: false,
+              gap: false,
+              lengends: true,
+              text: "count",
+            }}
+          ></PieChart>
+        )}
+      </Box>
     </Box>
   );
 }
