@@ -15,6 +15,7 @@ export interface PieChartConfig {
   gap?: boolean;
   lengends?: boolean;
   text?: "label" | "count";
+  maxWidth?: string;
 }
 export default function PieChart<T>({
   title,
@@ -26,6 +27,7 @@ export default function PieChart<T>({
     gap: true,
     lengends: false,
     text: "label",
+    maxWidth: "420px",
   },
 }: {
   title: string;
@@ -40,9 +42,10 @@ export default function PieChart<T>({
   const labels = Array.from(
     new Set(data.flatMap((d) => d.map((g) => g.label)))
   );
-  const svgHeight = config?.lengends
-    ? SVG_SIZE + (labels.length + 1) * LEGEND_HEIGHT
-    : SVG_SIZE;
+  const legends = config?.lengends ? labels : [];
+  const legendsHeight = (legends.length + 1) * LEGEND_HEIGHT;
+  const svgHeight = SVG_SIZE + legendsHeight;
+
   useEffect(() => {
     const ringRadius = (SVG_SIZE - padding) / 2 / (data.length + includeDonut);
     const color = d3
@@ -53,7 +56,6 @@ export default function PieChart<T>({
           .quantize((t) => d3.interpolateSpectral(t * 0.7 + 0.2), labels.length)
           .reverse()
       );
-    const legends = config?.lengends ? labels : [];
 
     d3.select(chartRef.current)
       .select(".legends")
@@ -128,7 +130,7 @@ export default function PieChart<T>({
           const [x, y] = arcLabel.centroid(d);
           return `translate(${x}, ${y})`;
         })
-        .attr("font-size", "0.2rem")
+        .attr("font-size", config?.text === "count" ? "0.3rem" : "0.2rem")
         .attr("font-weight", "600")
         .attr("fill", theme.palette.text.secondary)
         .attr("text-anchor", (d) =>
@@ -143,21 +145,23 @@ export default function PieChart<T>({
   }, [data]);
 
   return (
-    <Box sx={{ flex: "0 1 420px" }}>
+    <Box sx={{ flex: `0 1 ${config?.maxWidth}` }}>
       <Typography variant="h5" textAlign="center">
         {title}
       </Typography>
       <svg
         ref={chartRef}
         id={`pie-chart-${idRef.current}`}
-        viewBox={`${-SVG_SIZE / 2} ${-SVG_SIZE / 2} ${SVG_SIZE} ${svgHeight}`}
+        viewBox={`-${SVG_SIZE / 2} -${
+          (svgHeight + legendsHeight) / 2
+        } ${SVG_SIZE} ${svgHeight}`}
         preserveAspectRatio="xMidYMid meet"
       >
         <g className="chart"></g>
         <g
           className="legends"
-          transform={`translate(-${(SVG_SIZE - padding) / 2}, ${
-            (SVG_SIZE - padding) / 2 + LEGEND_HEIGHT
+          transform={`translate(-${(SVG_SIZE - padding) / 2}, -${
+            svgHeight / 2
           })`}
           fontSize="0.2rem"
           fontWeight={600}

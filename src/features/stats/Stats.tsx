@@ -41,6 +41,8 @@ export default function Stats() {
               gap: false,
               lengends: true,
               text: "count",
+              maxWidth: "360px",
+              padding: 20,
             }}
           ></PieChart>
         )}
