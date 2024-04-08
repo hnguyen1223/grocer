@@ -77,7 +77,7 @@ export default function PieChart<T>({
           legend
             .append("text")
             .attr("x", 6)
-            .attr("y", 2)
+            .attr("y", 3)
             .attr("fill", theme.palette.text.secondary)
             .text((d) => d);
           return legend;
