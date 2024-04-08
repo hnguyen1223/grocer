@@ -135,7 +135,7 @@ export function useLiveDb<T extends DocumentData | DocumentData[]>(
       setError(error as FirestoreError);
       setSnapshot(undefined);
     }
-  }, []);
+  }, [path]);
 
   return [snapshot, exist, error];
 }

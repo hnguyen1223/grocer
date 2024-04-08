@@ -9,7 +9,7 @@ import { BaseLog, ChartElement, DataGrouping, LOG_GROUPINGS, RequestLogConverter
 export function useWeeklyUsage(): { weeklyUsage: number, error: FirestoreError | undefined } {
     const user = useContext(UserContext);
     const [userData, _, userDataError] = useLiveDb<any>(`users/${user?.uid}`);
-    return { weeklyUsage: userData?.weeklyLimit ?? 0, error: userDataError };
+    return { weeklyUsage: userData?.weeklyUsage ?? 0, error: userDataError };
 }
 
 export function useUsageStats(): { modelUsage: ChartElement<BaseLog>[][], error: FirestoreError | undefined } {
