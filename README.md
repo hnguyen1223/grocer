@@ -13,6 +13,8 @@ This is a simple WIP app to manage food spoilage. Built as a pet project for per
 - [ ] Search
 - [ ] Manual expiry date entry
 - [ ] Loading and error indicators
+- [ ] Notifications
+- [ ] Dark mode & improve style system
 - [x] Accounts (Google, Github)
 - [x] User & guest data persistence
 - [x] [BE] Request limits and logs
