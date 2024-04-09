@@ -1,4 +1,11 @@
-import { Dispatch, useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  Dispatch,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   Durability,
   StuffActionType,
@@ -19,7 +26,13 @@ import { v4 as uuidv4 } from "uuid";
 import { UserContext, UserInitializedContext } from "../../core/UserProvider";
 import { useDb, useLiveDb } from ".";
 import { useLocalStorage } from "react-use";
-import { FirestoreError, deleteDoc, doc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  FirestoreError,
+  deleteDoc,
+  doc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { firestore } from "../../../firebase";
 import { DataWithState } from "../interfaces/data.model";
 import { getGuessData } from "../constants/guest-data";
@@ -129,24 +142,37 @@ export function useGetShelfLife(): {
     category && setCategory("");
   }
 
-  async function getShelfLife(item: string, gpt: GptVersion = GptVersion.THREE) {
+  async function getShelfLife(
+    item: string,
+    gpt: GptVersion = GptVersion.THREE
+  ) {
     await Promise.allSettled([
-      getFreezer({ gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.FREEZER } }).then(
-        (res) => setFreezer(mapResponse(res?.data?.response?.content))
+      getFreezer({
+        gpt,
+        queryType: QueryType.DURABILITY,
+        query: { item, stuffLocation: StuffLocation.FREEZER },
+      }).then((res) => setFreezer(mapResponse(res?.data?.response?.content))),
+      getFridge({
+        gpt,
+        queryType: QueryType.DURABILITY,
+        query: { item, stuffLocation: StuffLocation.FRIDGE },
+      }).then((res) => setFridge(mapResponse(res?.data?.response?.content))),
+      getOutside({
+        gpt,
+        queryType: QueryType.DURABILITY,
+        query: { item, stuffLocation: StuffLocation.OUTSIDE },
+      }).then((res) => setOutside(mapResponse(res?.data?.response?.content))),
+      getEmoji({ gpt, queryType: QueryType.EMOJI, query: { item } }).then(
+        (res) =>
+          setEmoji(
+            (res?.data?.response?.content ?? "").replace(
+              /[\w\\\/\s,\(\)]+/g,
+              ""
+            )
+          )
       ),
-      getFridge({ gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.FRIDGE } }).then((res) =>
-        setFridge(mapResponse(res?.data?.response?.content))
-      ),
-      getOutside({ gpt, queryType: QueryType.DURABILITY, query: { item, stuffLocation: StuffLocation.OUTSIDE } }).then(
-        (res) => setOutside(mapResponse(res?.data?.response?.content))
-      ),
-      getEmoji({ gpt, queryType: QueryType.EMOJI, query: { item } }).then((res) =>
-        setEmoji(
-          (res?.data?.response?.content ?? "").replace(/[\w\\\/\s,\(\)]+/g, "")
-        )
-      ),
-      getCategory({ gpt, queryType: QueryType.CATEGORY, query: { item } }).then((res) =>
-        setCategory((res?.data?.response?.content ?? "").trim())
+      getCategory({ gpt, queryType: QueryType.CATEGORY, query: { item } }).then(
+        (res) => setCategory((res?.data?.response?.content ?? "").trim())
       ),
     ]);
   }
@@ -182,20 +208,35 @@ export function useGetShelfLife(): {
   };
 }
 
-export function useObjectRecognition(): [(
-  data: Blob | Uint8Array | ArrayBuffer,
-  metadata?: UploadMetadata | undefined
-) => Promise<UploadResult | undefined>, string, string[] | undefined, boolean, StorageError | FirestoreError | undefined] {
+export function useObjectRecognition(): [
+  (
+    data: Blob | Uint8Array | ArrayBuffer,
+    metadata?: UploadMetadata | undefined
+  ) => Promise<UploadResult | undefined>,
+  string,
+  string[] | undefined,
+  boolean,
+  StorageError | FirestoreError | undefined
+] {
   const user = useContext(UserContext);
   const [upload, snapshot, uploading, uploadError] = useUpload();
 
   const idRef = useRef<string>(uuidv4());
-  const fileName = `${user?.uid}_${idRef.current}`
-  const [request, exist, processingError] = useLiveDb<any>(`users/${user?.uid}/requests/${idRef.current}`);
+  const fileName = `${user?.uid}_${idRef.current}`;
+  const [request, exist, processingError] = useLiveDb<any>(
+    `users/${user?.uid}/requests/${idRef.current}`
+  );
   const [started, setStarted] = useState(false);
-  const loading =
-    uploading || (started && !exist && !processingError);
-  const status = snapshot ? `Uploading ${Math.round(snapshot.bytesTransferred / snapshot.totalBytes * 100)}%` : loading ? 'Processing' : started ? 'Done' : '';
+  const loading = uploading || (started && !exist && !processingError);
+  const status = snapshot
+    ? `Uploading ${Math.round(
+        (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+      )}%`
+    : loading
+    ? "Processing"
+    : started
+    ? "Done"
+    : "";
   const error = uploadError || processingError;
   const cachedFn = useCallback(
     (data: Blob | Uint8Array | ArrayBuffer) => {
@@ -224,13 +265,7 @@ function mapResponse(str: string | undefined): Durability {
 function stuffsReducer(stuffs: Stuff[], action: StuffAction): Stuff[] {
   switch (action.type) {
     case StuffActionType.ADD:
-      return [
-        ...stuffs,
-        {
-          ...action.stuff,
-          dateAdded: new Date().toString(),
-        } as Stuff,
-      ];
+      return [...stuffs, action.stuff as Stuff];
     case StuffActionType.UPDATE:
       return stuffs.map((s) => {
         if (s.id === action.stuff.id) {

@@ -69,6 +69,7 @@ export default function CreateStuffText({
         },
         emoji: emoji.data,
         category: category.data,
+        dateAdded: new Date().toString(),
         ...(expiryDate ? { expiryDate } : {}),
       };
       dispatch({
