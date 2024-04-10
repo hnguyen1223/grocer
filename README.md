@@ -26,6 +26,6 @@ This is a simple WIP app to manage food spoilage. Built as a pet project for per
 <img width="196" alt="Screenshot 2024-04-04 at 10 09 29 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/8113bcce-d9fd-48a5-bbe9-ea1c8eb9f551">
 <img width="196" alt="Screenshot 2024-04-04 at 10 10 00 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/6b3a88b5-f1ad-44a9-85e8-d68d7f20d8a8">
 <img width="196" alt="Screenshot 2024-04-04 at 10 10 09 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/f9272d2f-4c78-4104-9136-2927f6cef478">
-<img width="196" alt="Screenshot 2024-04-07 at 5 41 09 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/6f4bd441-ce64-4a9f-8be3-725f3d3978d8">
+<img width="196" alt="Screenshot 2024-04-09 at 9 35 18 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/f6fa75b6-7c61-477c-99b3-b572adf1919e">
 <img width="396" alt="Screenshot 2024-04-04 at 10 00 33 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/22757de1-633b-418e-9d57-05b9a8ecd375">
 <img width="396" alt="Screenshot 2024-04-04 at 10 01 23 PM" src="https://github.com/hnguyen1223/grocer/assets/32588483/2b65898c-9ada-48ab-b9f7-2f364340e01c">
