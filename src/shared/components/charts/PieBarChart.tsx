@@ -62,7 +62,7 @@ function PieBarChart<T>({
         display: "flex",
         flexWrap: "wrap",
         justifyContent: "center",
-        rowGap: 2,
+        rowGap: 1,
       }}
     >
       <PieChart

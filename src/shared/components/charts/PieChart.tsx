@@ -219,7 +219,7 @@ function PieChart<T>({
         maxWidth: maxWidth || DEFAULT_MAX_WIDTH,
       }}
     >
-      <Typography variant="h5" textAlign="center" mb={4}>
+      <Typography variant="h5" textAlign="center" mb={2}>
         {title}
       </Typography>
       <svg ref={chartRef}>

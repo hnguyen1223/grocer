@@ -98,7 +98,7 @@ function BarChart<T>({
       }}
     >
       {title && (
-        <Typography variant="h5" textAlign="center">
+        <Typography variant="h5" textAlign="center" mb={1}>
           {title}
         </Typography>
       )}

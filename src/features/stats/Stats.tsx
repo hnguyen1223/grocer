@@ -29,7 +29,7 @@ export default function Stats() {
           flexWrap: "wrap",
           justifyContent: "center",
           columnGap: 16,
-          rowGap: 2,
+          rowGap: 4,
           pb: isDesktop ? 0 : 2,
           pt: isDesktop ? 4 : 2,
           px: 2,
