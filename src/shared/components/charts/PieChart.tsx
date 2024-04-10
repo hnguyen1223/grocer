@@ -81,7 +81,10 @@ function PieChart<T>({
         (exit) => exit.remove()
       );
 
-    const pie = d3.pie<ChartElement<T>>().value((d) => d.count);
+    const pie = d3
+      .pie<ChartElement<T>>()
+      .sort(null)
+      .value((d) => d.count);
 
     data.forEach((ring, index) => {
       const innerRadius = (index + includeDonut) * ringRadius;

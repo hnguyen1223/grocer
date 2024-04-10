@@ -37,7 +37,6 @@ function BarChart<T>({
       .scaleLinear()
       .domain([0, d3.max(data, (d) => d.count) ?? 0])
       .range([0, CHART_WIDTH]);
-    console.log(x(4));
 
     const y = d3
       .scaleBand()
