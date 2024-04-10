@@ -90,6 +90,8 @@ function BarChart<T>({
   return (
     <Box
       sx={{
+        display: "flex",
+        flexDirection: "column",
         width: "100%",
         maxWidth: maxWidth || DEFAULT_MAX_WIDTH,
         backgroundColor: background ? theme.palette.grey[200] : "transparent",
